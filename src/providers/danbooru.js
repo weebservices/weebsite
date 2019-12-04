@@ -31,7 +31,7 @@ class Danbooru extends Provider {
 
   async _getPost (tag, ratings) {
     const allPosts = await fetch(`https://danbooru.donmai.us/posts.json?tags=${tag}&limit=200`).then(res => res.json())
-    const posts = allPosts.filter(post => !post.is_pending && post.file_url && ratings.includes(post.rating))
+    const posts = allPosts.filter(post => !post.is_pending && post.file_url && ratings.includes(post.rating) && !post.tag_string.split(' ').includes('trap'))
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
       post.file_url.split('.').pop(),

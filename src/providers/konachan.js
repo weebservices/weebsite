@@ -45,7 +45,7 @@ class Konachan extends Provider {
 
   async _getPost (tag, ratings) {
     const allPosts = await fetch(`https://konachan.com/post.json?tags=${tag}&limit=500`).then(res => res.json())
-    const posts = allPosts.filter(post => ratings.includes(post.rating))
+    const posts = allPosts.filter(post => ratings.includes(post.rating) && !post.tags.split(' ').includes('trap'))
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
       post.file_url.split('.').pop(),
