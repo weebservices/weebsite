@@ -1,9 +1,13 @@
 const Konachan = require('./konachan')
+const Danbooru = require('./danbooru')
+const Yandere = require('./yandere')
 
 class Providers {
   constructor () {
     this.providers = [
-      new Konachan()
+      new Konachan(),
+      new Danbooru(),
+      new Yandere()
     ]
   }
 

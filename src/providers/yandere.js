@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const Provider = require('./provider')
 
-class Konachan extends Provider {
+class Yandere extends Provider {
   constructor () {
     super([
       'SENKO',
@@ -11,27 +11,27 @@ class Konachan extends Provider {
   }
 
   provideSenko () {
-    return this._getPost('senko', [ Konachan.SAFE ])
+    return this._getPost('senko-san', [ Yandere.SAFE ])
   }
 
   provideMaid () {
-    return this._getPost('maid', [ Konachan.SAFE ])
+    return this._getPost('maid', [ Yandere.SAFE ])
   }
 
   provideMaidNsfw () {
-    return this._getPost('maid', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+    return this._getPost('maid', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
   }
 
   provideLoli () {
-    return this._getPost('loli', [ Konachan.SAFE ])
+    return this._getPost('loli', [ Yandere.SAFE ])
   }
 
   provideLoliNsfw () {
-    return this._getPost('loli', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+    return this._getPost('loli', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
   }
 
   async _getPost (tag, ratings) {
-    const allPosts = await fetch(`https://konachan.com/post.json?tags=${tag}&limit=500`).then(res => res.json())
+    const allPosts = await fetch(`https://yande.re/post.json?tags=${tag}&limit=500`).then(res => res.json())
     const posts = allPosts.filter(post => ratings.includes(post.rating))
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
@@ -41,8 +41,8 @@ class Konachan extends Provider {
   }
 }
 
-Konachan.SAFE = 's'
-Konachan.QUESTIONABLE = 'q'
-Konachan.EXPLICIT = 'e'
+Yandere.SAFE = 's'
+Yandere.QUESTIONABLE = 'q'
+Yandere.EXPLICIT = 'e'
 
-module.exports = Konachan
+module.exports = Yandere
