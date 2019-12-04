@@ -4,7 +4,8 @@ const Provider = require('./provider')
 class Yandere extends Provider {
   constructor () {
     super([
-      'SENKO',
+      'SENKO', 'YURI',
+      'KANNA', 'KANNA_NSFW',
       'MAID', 'MAID_NSFW',
       'LOLI', 'LOLI_NSFW'
     ])
@@ -12,6 +13,18 @@ class Yandere extends Provider {
 
   provideSenko () {
     return this._getPost('senko-san', [ Yandere.SAFE ])
+  }
+
+  provideYuri () {
+    return this._getPost('yuri', [ Yandere.SAFE, Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+  }
+
+  provideKanna () {
+    return this._getPost('kanna_kamui', [ Yandere.SAFE ])
+  }
+
+  provideKannaNsfw () {
+    return this._getPost('kanna_kamui', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
   }
 
   provideMaid () {

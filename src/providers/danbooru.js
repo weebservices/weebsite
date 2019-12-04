@@ -4,13 +4,21 @@ const Provider = require('./provider')
 class Danbooru extends Provider {
   constructor () {
     super([
-      'SENKO',
+      'SENKO', 'KANNA', 'YURI',
       'MAID', 'MAID_NSFW'
     ])
   }
 
   provideSenko () {
     return this._getPost('senko_(sewayaki_kitsune_no_senko-san)', [ Danbooru.SAFE ])
+  }
+
+  provideKanna () {
+    return this._getPost('kanna_kamui', [ Danbooru.SAFE ])
+  }
+
+  provideYuri () {
+    return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
   }
 
   provideMaid () {
