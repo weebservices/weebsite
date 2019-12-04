@@ -1,0 +1,13 @@
+# IntelliJ
+.idea
+
+# the petabyte of node_modules/node_modules/node_modules/node_modules/node_modules/node_modules/node_modules
+node_modules
+
+# stuff
+*.nogit.*
+.travisci/private_rsa_keys.tar.gz
+
+# i'll maybe set it up later
+.travis.yml
+.travisci

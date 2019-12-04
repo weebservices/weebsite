@@ -1,0 +1,8 @@
+{
+  "apps": [
+    {
+      "name": "weeb.services",
+      "script": "./src/index.js"
+    }
+  ]
+}
