@@ -8,4 +8,10 @@ class Provider {
   }
 }
 
+Provider.available = [
+  'SENKO', 'YURI', 'LOLI', 'KANNA',
+  'THIGH', 'THIGH_NSFW',
+  'NEKO', 'NEKO_NSFW',
+  'MAID', 'MAID_NSFW'
+]
 module.exports = Provider

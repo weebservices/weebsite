@@ -4,12 +4,10 @@ const Provider = require('./provider')
 class Konachan extends Provider {
   constructor () {
     super([
-      'SENKO', 'YURI',
-      'KANNA', 'KANNA_NSFW',
+      'SENKO', 'YURI', 'LOLI', 'KANNA',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
-      'MAID', 'MAID_NSFW',
-      'LOLI', 'LOLI_NSFW'
+      'MAID', 'MAID_NSFW'
     ])
   }
 
@@ -23,10 +21,6 @@ class Konachan extends Provider {
 
   provideKanna () {
     return this._getPost('kanna_kamui', [ Konachan.SAFE ])
-  }
-
-  provideKannaNsfw () {
-    return this._getPost('kanna_kamui', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
   }
 
   provideThigh () {
@@ -55,10 +49,6 @@ class Konachan extends Provider {
 
   provideLoli () {
     return this._getPost('loli', [ Konachan.SAFE ])
-  }
-
-  provideLoliNsfw () {
-    return this._getPost('loli', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
   }
 
   async _getPost (tag, ratings) {

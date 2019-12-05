@@ -4,11 +4,19 @@ const Provider = require('./provider')
 class FBI extends Provider {
   constructor () {
     super([
-      'SENKO_NSFW'
+      'SENKO_NSFW', 'KANNA_NSFW', 'LOLI_NSFW'
     ])
   }
 
   provideSenkoNsfw () {
+    return this._provide()
+  }
+
+  provideKannaNsfw () {
+    return this._provide()
+  }
+
+  provideLoliNsfw () {
     return this._provide()
   }
 

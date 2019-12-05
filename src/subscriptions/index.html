@@ -1,0 +1,136 @@
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="/style.css"/>
+  <title>weeb.services</title>
+</head>
+<body>
+  <h1>Weeb.Services Subscription System</h1>
+  <div class="flash" data-state="error">This is not working yet.</div>
+  <div class="whats-this">
+    A random image will be sent to your Discord Webhook every 4 hours. No shit.<br/><br/>
+    <b>Notes:</b><br/>
+    To update subscriptions you have to delete your webhook and create it again.<br/>
+    weeb.services will never use your webhook for anything else than automated posting.<br/>
+    We'll send you a confirmation event when adding or removing a webhook. It is to ensure webhook exists and have the proper signature with it.<br/>
+    We'll remove your subscription if we fail sending 5 times in a row (Excluding 5xx errors).<br/>
+    This UI is not meant to be pretty but to be working. Don't complain.<br/>
+  </div>
+  <div id="flash" class="flash" data-state="huh" style="display: none;">emma is cute</div>
+  <div id="select">
+    <h2>What do you want to do</h2>
+    <div class="buttons">
+      <button id="select-new">New Subscription</button>
+      <button id="select-delet">Remove Subscription</button>
+    </div>
+  </div>
+  <div id="new" style="display: none;">
+    <h2>New Subscription</h2>
+    <div class="field">
+      <label>Discord Webhook URL</label>
+      <input type='text' name='discord-webhook-new'>
+    </div>
+    <div class="field">
+      <label>What you want</label>
+      <div class="checkboxes" id="checkboxes"></div>
+    </div>
+    <div id="new-recaptcha" class="recaptcha"></div>
+    <div class="buttons">
+      <button id="new-create">Create</button>
+      <button id="new-back">Go back</button>
+    </div>
+  </div>
+  <div id="delet" style="display: none;">
+    <h2>Delete a Subscription</h2>
+    <div class="field">
+      <label>Discord Webhook URL</label>
+      <input type='text' name='discord-webhook-delet'>
+    </div>
+    <div id="delet-recaptcha" class="recaptcha"></div>
+    <div class="buttons">
+      <button id="delet-this">Delete</button>
+      <button id="delet-back">Go back</button>
+    </div>
+  </div>
+  <script>
+    let widgetIdNew, widgetIdDel, recaptchaResponse
+    function googleAteMyData () {
+      widgetIdNew = grecaptcha.render('new-recaptcha', { sitekey : '6LcYVcYUAAAAAHPknI68Q8yHawc-KPzZs4anRF3M', theme : 'dark', callback: (res) => recaptchaResponse = res })
+      widgetIdDel = grecaptcha.render('delet-recaptcha', { sitekey : '6LcYVcYUAAAAAHPknI68Q8yHawc-KPzZs4anRF3M', theme : 'dark', callback: (res) => recaptchaResponse = res })
+    }
+    function flash(message, state) {
+      const flash = document.getElementById('flash')
+      flash.innerText = message
+      flash.dataset.state = state
+      flash.style.display = 'block'
+      setTimeout(() => flash.style.display = 'none', 5000)
+    }
+
+    // INITIALIZE BOXES
+    const currentHost = location.host.split('.').shift().toUpperCase()
+    fetch('/available').then(res => res.json()).then(json => {
+      const checkboxes = document.getElementById('checkboxes')
+      json.forEach((available, i) => {
+        const name = available.split('_').map((e, i) => i === 0 ? e[0] + e.substring(1).toLowerCase() : `(${e})`).join(' ')
+        const checkbox = document.createElement('div')
+        const input = document.createElement('input')
+        const label = document.createElement('label')
+        const span = document.createElement('span')
+        checkbox.className = 'checkbox'
+        input.id = `cb-type-${i}`
+        input.type = 'checkbox'
+        input.name = available
+        input.dataset.type = 'owo'
+        input.checked = available === currentHost;
+        label.htmlFor = `cb-type-${i}`
+        label.className = 'input'
+        span.innerText = name
+        checkbox.appendChild(input)
+        checkbox.appendChild(label)
+        checkbox.appendChild(span)
+        checkboxes.appendChild(checkbox)
+      })
+    })
+
+    // BUTTONS
+    document.getElementById('select-new').addEventListener('click', () => {
+      document.getElementById('select').style.display = 'none'
+      document.getElementById('new').style.display = 'block'
+    })
+    document.getElementById('select-delet').addEventListener('click', () => {
+      document.getElementById('select').style.display = 'none'
+      document.getElementById('delet').style.display = 'block'
+    })
+    document.getElementById('new-back').addEventListener('click', () => {
+      grecaptcha.reset(widgetIdNew)
+      document.getElementById('new').style.display = 'none'
+      document.getElementById('select').style.display = 'block'
+    })
+    document.getElementById('delet-back').addEventListener('click', () => {
+      grecaptcha.reset(widgetIdDel)
+      document.getElementById('delet').style.display = 'none'
+      document.getElementById('select').style.display = 'block'
+    })
+    document.getElementById('new-create').addEventListener('click', async () => {
+      const url = document.querySelector('[name="discord-webhook-new"]').value
+      const subTo = [ ...document.querySelectorAll('[data-type="owo"]:checked') ].map(i => i.name)
+      const res = await fetch(location.pathname, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, subTo, recaptchaResponse })
+      }).then(res => res.json())
+      grecaptcha.reset(widgetIdNew)
+      flash(res.content, res.type)
+      if (res.type === 'success') {
+        document.getElementById('new-back').click()
+      }
+    })
+    document.getElementById('delet-this').addEventListener('click', async () => {
+      console.log('o')
+    })
+  </script>
+  <script src="https://www.google.com/recaptcha/api.js?onload=googleAteMyData&render=explicit"></script>
+</body>
+</html>
