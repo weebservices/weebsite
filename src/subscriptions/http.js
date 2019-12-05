@@ -21,7 +21,10 @@ const verifyRecaptcha = async (code) => {
 }
 
 module.exports = {
-  html: (req, res) => createReadStream(join(__dirname, 'index.html')).pipe(res),
+  html: (req, res) => {
+    res.type('text/html')
+    createReadStream(join(__dirname, 'index.html')).pipe(res)
+  },
   css: (req, res) => {
     res.type('text/css')
     createReadStream(join(__dirname, 'style.css')).pipe(res)
