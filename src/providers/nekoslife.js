@@ -9,15 +9,15 @@ class NekosLife extends Provider {
   }
 
   provideYuri () {
-    return this._getPost('yuri')
+    return this._getImg('yuri')
   }
 
   provideNeko () {
-    return this._getPost('neko')
+    return this._getImg('neko')
   }
 
   provideNekoNsfw () {
-    return this._getPost('lewd')
+    return this._getImg('lewd')
   }
 
   async _getImg (tag) {
