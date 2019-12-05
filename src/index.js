@@ -15,7 +15,11 @@ app.use((req, res, next) => {
 
 const services = {
   weeb: {
-    '/': (req, res) => res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
+    '/': (req, res) => res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>"),
+    '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
+    '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
+    '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
+    '/isemmacute': (req, res) => res.send('<h1>yes</h1>')
   },
   yuri: {
     '/': (req, res) => providers.provide(req, res, 'YURI')
