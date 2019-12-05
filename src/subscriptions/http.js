@@ -22,7 +22,10 @@ const verifyRecaptcha = async (code) => {
 
 module.exports = {
   html: (req, res) => createReadStream(join(__dirname, 'index.html')).pipe(res),
-  css: (req, res) => createReadStream(join(__dirname, 'style.css')).pipe(res),
+  css: (req, res) => {
+    res.type('text/css')
+    createReadStream(join(__dirname, 'style.css')).pipe(res)
+  },
   post: async (req, res) => {
     if (!dickswordHookRegex.test(req.body.url)) {
       return res.json({ type: 'error', content: 'Invalid webhook' })
