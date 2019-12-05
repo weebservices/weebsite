@@ -6,6 +6,8 @@ class Konachan extends Provider {
     super([
       'SENKO', 'YURI',
       'KANNA', 'KANNA_NSFW',
+      'THIGH', 'THIGH_NSFW',
+      'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW',
       'LOLI', 'LOLI_NSFW'
     ])
@@ -25,6 +27,22 @@ class Konachan extends Provider {
 
   provideKannaNsfw () {
     return this._getPost('kanna_kamui', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+  }
+
+  provideThigh () {
+    return this._getPost('thighhighs', [ Konachan.SAFE ])
+  }
+
+  provideThighNsfw () {
+    return this._getPost('thighhighs', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+  }
+
+  provideNeko () {
+    return this._getPost('cat', [ Konachan.SAFE ])
+  }
+
+  provideNekoNsfw () {
+    return this._getPost('cat', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
   }
 
   provideMaid () {

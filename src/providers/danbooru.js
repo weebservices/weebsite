@@ -5,6 +5,8 @@ class Danbooru extends Provider {
   constructor () {
     super([
       'SENKO', 'KANNA', 'YURI',
+      'THIGH', 'THIGH_NSFW',
+      'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW'
     ])
   }
@@ -19,6 +21,22 @@ class Danbooru extends Provider {
 
   provideYuri () {
     return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+  }
+
+  provideThigh () {
+    return this._getPost('thighs', [ Danbooru.SAFE ])
+  }
+
+  provideThighNsfw () {
+    return this._getPost('thighs', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+  }
+
+  provideNeko () {
+    return this._getPost('cat', [ Danbooru.SAFE ])
+  }
+
+  provideNekoNsfw () {
+    return this._getPost('cat', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
   }
 
   provideMaid () {

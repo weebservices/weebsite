@@ -6,6 +6,8 @@ class Yandere extends Provider {
     super([
       'SENKO', 'YURI',
       'KANNA', 'KANNA_NSFW',
+      'THIGH', 'THIGH_NSFW',
+      'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW',
       'LOLI', 'LOLI_NSFW'
     ])
@@ -25,6 +27,22 @@ class Yandere extends Provider {
 
   provideKannaNsfw () {
     return this._getPost('kanna_kamui', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+  }
+
+  provideNeko () {
+    return this._getPost('neko', [ Yandere.SAFE ])
+  }
+
+  provideNekoNsfw () {
+    return this._getPost('neko', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+  }
+
+  provideThigh () {
+    return this._getPost('thighhighs', [ Yandere.SAFE ])
+  }
+
+  provideThighNsfw () {
+    return this._getPost('thighhighs', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
   }
 
   provideMaid () {
