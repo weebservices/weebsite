@@ -1,20 +1,15 @@
+const { join } = require('path')
+const { createReadStream } = require('fs')
 const express = require('express')
 const Providers = require('./providers')
 const Provider = require('./providers/provider')
-const subscriptions = require('./subscriptions/http')
+const subscriptions = require('./subscriptions')
+const errors = require('./error')
 
 const providers = new Providers()
 const app = express()
 
-app.use(express.json())
-app.use((req, res, next) => {
-  const host = req.get('host')
-  if (!host || (req.get('user-agent') && req.get('user-agent').includes('discordapp.com'))) {
-    return res.sendStatus(404)
-  }
-  req.sub = host.split('.').shift()
-  next()
-})
+const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 
 const services = {
   weeb: {
@@ -22,19 +17,19 @@ const services = {
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
-    '/isemmacute': (req, res) => res.send('<h1>yes</h1>')
+    '/isemmacute': (req, res) => {
+      res.send('<h1>yes</h1>')
+    }
   },
   yuri: {
     '/': (req, res) => providers.provide(req, res, 'YURI')
   },
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
-    '/kinky': (req, res) => providers.provide(req, res, 'SENKO_NSFW'),
     '/lair': (req, res) => res.redirect('https://discord.gg/UrHhtWE')
   },
   kanna: {
-    '/': (req, res) => providers.provide(req, res, 'KANNA'),
-    '/kinky': (req, res) => providers.provide(req, res, 'KANNA_NSFW')
+    '/': (req, res) => providers.provide(req, res, 'KANNA')
   },
   maid: {
     '/': (req, res) => providers.provide(req, res, 'MAID'),
@@ -49,18 +44,36 @@ const services = {
     '/kinky': (req, res) => providers.provide(req, res, 'NEKO_NSFW')
   },
   loli: {
-    '/': (req, res) => providers.provide(req, res, 'LOLI'),
-    '/kinky': (req, res) => providers.provide(req, res, 'LOLI_NSFW')
+    '/': (req, res) => providers.provide(req, res, 'LOLI')
+  },
+  yiff: {
+    '/': (req, res) => {
+      res.type('image/png')
+      createReadStream(heCared).pipe(res)
+    }
   }
 }
 
+const aliases = {
+  lesbian: 'yuri'
+}
+
+app.use(express.json())
+app.use((req, res, next) => {
+  const host = req.get('host')
+  if (!host) return errors['404'](req, res)
+
+  req.sub = host.split('.').shift()
+  if (aliases[req.sub]) req.sub = aliases[req.sub]
+  next()
+})
+
 app.get('/available', (req, res) => res.json(Provider.available))
+app.get('/subscriptions', subscriptions.html)
+app.post('/subscriptions', subscriptions.post)
+app.delete('/subscriptions', subscriptions.del)
 
-app.get('/can/i/have/weeb/material/in/my/discord/server', subscriptions.html)
-app.get('/style.css', subscriptions.css)
-
-app.post('/can/i/have/weeb/material/in/my/discord/server', subscriptions.post)
-app.delete('/can/i/have/weeb/material/in/my/discord/server', subscriptions.del)
+app.get('/can/i/have/weeb/material/in/my/discord/server', (req, res) => res.redirect('/subscriptions'))
 
 app.get('**', (req, res) => {
   if (req.sub === 'localhost:1539') {
@@ -69,20 +82,28 @@ app.get('**', (req, res) => {
     if (path[1] && services[path[1]]) {
       [ , sub ] = path
       delete path[1]
+    } else if (path[1] && aliases[path[1]]) {
+      sub = aliases[path[1]]
+      delete path[1]
     }
     const service = services[sub]
     const target = path.join('/')
     if (!service[target]) {
-      return res.sendStatus(404)
+      return errors['404'](req, res)
     }
     service[target](req, res)
   } else {
     const service = services[req.sub]
     if (!service || !service[req.path]) {
-      return res.sendStatus(404)
+      return errors['404'](req, res)
     }
     service[req.path](req, res)
   }
+})
+
+app.use((err, req, res, _) => { // eslint-disable-line no-unused-vars
+  console.error(err)
+  return errors['5xx'](req, res)
 })
 
 app.listen(1539)

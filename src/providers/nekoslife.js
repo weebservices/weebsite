@@ -8,16 +8,17 @@ class NekosLife extends Provider {
     ])
   }
 
-  provideYuri () {
-    return this._getImg('yuri')
-  }
-
-  provideNeko () {
-    return this._getImg('neko')
-  }
-
-  provideNekoNsfw () {
-    return this._getImg('lewd')
+  provide (type) {
+    switch (type) {
+      case 'YURI':
+        return this._getImg('yuri')
+      case 'NEKO':
+        return this._getImg('neko')
+      case 'NEKO_NSFW':
+        return this._getImg('lewd')
+      default:
+        return null
+    }
   }
 
   async _getImg (tag) {

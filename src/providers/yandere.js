@@ -4,51 +4,38 @@ const Provider = require('./provider')
 class Yandere extends Provider {
   constructor () {
     super([
-      'SENKO', 'YURI', 'LOLI', 'KANNA',
+      'SENKO', 'KANNA', 'YURI', 'LOLI',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW'
     ])
   }
 
-  provideSenko () {
-    return this._getPost('senko-san', [ Yandere.SAFE ])
-  }
-
-  provideYuri () {
-    return this._getPost('yuri', [ Yandere.SAFE, Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
-  }
-
-  provideKanna () {
-    return this._getPost('kanna_kamui', [ Yandere.SAFE ])
-  }
-
-  provideNeko () {
-    return this._getPost('neko', [ Yandere.SAFE ])
-  }
-
-  provideNekoNsfw () {
-    return this._getPost('neko', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
-  }
-
-  provideThigh () {
-    return this._getPost('thighhighs', [ Yandere.SAFE ])
-  }
-
-  provideThighNsfw () {
-    return this._getPost('thighhighs', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
-  }
-
-  provideMaid () {
-    return this._getPost('maid', [ Yandere.SAFE ])
-  }
-
-  provideMaidNsfw () {
-    return this._getPost('maid', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
-  }
-
-  provideLoli () {
-    return this._getPost('loli', [ Yandere.SAFE ])
+  provide (type) {
+    switch (type) {
+      case 'SENKO':
+        return this._getPost('senko-san', [ Yandere.SAFE ])
+      case 'KANNA':
+        return this._getPost('kanna_kamui', [ Yandere.SAFE ])
+      case 'YURI':
+        return this._getPost('yuri', [ Yandere.SAFE, Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+      case 'LOLI':
+        return this._getPost('loli', [ Yandere.SAFE ])
+      case 'THIGH':
+        return this._getPost('thighhighs', [ Yandere.SAFE ])
+      case 'THIGH_NSFW':
+        return this._getPost('thighhighs', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+      case 'NEKO':
+        return this._getPost('neko', [ Yandere.SAFE ])
+      case 'NEKO_NSFW':
+        return this._getPost('neko', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+      case 'MAID':
+        return this._getPost('maid', [ Yandere.SAFE ])
+      case 'MAID_NSFW':
+        return this._getPost('maid', [ Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+      default:
+        return null
+    }
   }
 
   async _getPost (tag, ratings) {

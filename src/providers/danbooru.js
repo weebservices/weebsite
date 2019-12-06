@@ -11,40 +11,29 @@ class Danbooru extends Provider {
     ])
   }
 
-  provideSenko () {
-    return this._getPost('senko_(sewayaki_kitsune_no_senko-san)', [ Danbooru.SAFE ])
-  }
-
-  provideKanna () {
-    return this._getPost('kanna_kamui', [ Danbooru.SAFE ])
-  }
-
-  provideYuri () {
-    return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
-  }
-
-  provideThigh () {
-    return this._getPost('thighs', [ Danbooru.SAFE ])
-  }
-
-  provideThighNsfw () {
-    return this._getPost('thighs', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
-  }
-
-  provideNeko () {
-    return this._getPost('cat', [ Danbooru.SAFE ])
-  }
-
-  provideNekoNsfw () {
-    return this._getPost('cat', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
-  }
-
-  provideMaid () {
-    return this._getPost('maid', [ Danbooru.SAFE ])
-  }
-
-  provideMaidNsfw () {
-    return this._getPost('maid', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+  provide (type) {
+    switch (type) {
+      case 'SENKO':
+        return this._getPost('senko_(sewayaki_kitsune_no_senko-san)', [ Danbooru.SAFE ])
+      case 'KANNA':
+        return this._getPost('kanna_kamui', [ Danbooru.SAFE ])
+      case 'YURI':
+        return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'THIGH':
+        return this._getPost('thighs', [ Danbooru.SAFE ])
+      case 'THIGH_NSFW':
+        return this._getPost('thighs', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'NEKO':
+        return this._getPost('cat', [ Danbooru.SAFE ])
+      case 'NEKO_NSFW':
+        return this._getPost('cat', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'MAID':
+        return this._getPost('maid', [ Danbooru.SAFE ])
+      case 'MAID_NSFW':
+        return this._getPost('maid', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      default:
+        return null
+    }
   }
 
   async _getPost (tag, ratings) {

@@ -3,8 +3,8 @@ const { join } = require('path')
 const { stringify } = require('qs')
 const { createReadStream } = require('fs')
 
-const Provider = require('../providers/provider')
-const keys = require('../../keys.json')
+const Provider = require('./providers/provider')
+const keys = require('../keys.json')
 
 const dickswordHookRegex = /^https:\/\/(?:canary\.|ptb\.)?discordapp.com\/api\/webhooks\/(\d+)\/(?:[\w-]+)$/
 const verifyRecaptcha = async (code) => {
@@ -23,11 +23,7 @@ const verifyRecaptcha = async (code) => {
 module.exports = {
   html: (req, res) => {
     res.type('text/html')
-    createReadStream(join(__dirname, 'index.html')).pipe(res)
-  },
-  css: (req, res) => {
-    res.type('text/css')
-    createReadStream(join(__dirname, 'style.css')).pipe(res)
+    createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
   },
   post: async (req, res) => {
     if (!dickswordHookRegex.test(req.body.url)) {
