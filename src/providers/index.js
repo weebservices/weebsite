@@ -3,6 +3,7 @@ const Danbooru = require('./danbooru')
 const Yandere = require('./yandere')
 const NekosLife = require('./nekoslife')
 const errors = require('../error')
+const dogstatsd = require('./dogstatsd')
 
 class Providers {
   constructor () {
@@ -11,6 +12,7 @@ class Providers {
       new Danbooru(),
       new Yandere(),
       new NekosLife()
+      // @todo: nekobot.xyz
       // @todo: gelbooru
       // @todo: rule34.xxx
       // @todo: reddit (r/Animemes)
@@ -28,6 +30,7 @@ class Providers {
     const data = await provider.provide(type)
     if (!data) return errors['404'](req, res)
 
+    dogstatsd.increment(`provider.${type.replace('_', '.').toLowerCase()}`)
     res.type(`image/${data[0]}`)
     data[1].body.pipe(res)
   }

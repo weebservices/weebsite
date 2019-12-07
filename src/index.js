@@ -4,6 +4,7 @@ const express = require('express')
 const Providers = require('./providers')
 const Provider = require('./providers/provider')
 const subscriptions = require('./subscriptions')
+const dogstatsd = require('./dogstatsd')
 const errors = require('./error')
 
 const providers = new Providers()
@@ -13,13 +14,17 @@ const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 
 const services = {
   weeb: {
-    '/': (req, res) => res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>"),
+    '/': (req, res) => {
+      res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
+      dogstatsd.increment('home.view')
+    },
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/isemmacute': (req, res) => {
       res.type('text/html')
       createReadStream(join(__dirname, '..', 'views', 'emma.html')).pipe(res)
+      dogstatsd.increment('emma.view')
     }
   },
   yuri: {
@@ -27,7 +32,10 @@ const services = {
   },
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
-    '/lair': (req, res) => res.redirect('https://discord.gg/UrHhtWE')
+    '/lair': (req, res) => {
+      dogstatsd.increment('provider.senko.invite')
+      res.redirect('https://discord.gg/UrHhtWE')
+    }
   },
   kanna: {
     '/': (req, res) => providers.provide(req, res, 'KANNA')
@@ -74,6 +82,7 @@ app.use('/assets', express.static(join(__dirname, '..', 'assets')))
 app.get('/subscriptions', (req, res) => {
   res.type('text/html')
   createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
+  dogstatsd.increment('subscriptions.view')
 })
 app.post('/subscriptions', subscriptions.post)
 app.delete('/subscriptions', subscriptions.del)
