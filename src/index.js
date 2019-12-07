@@ -48,6 +48,7 @@ const services = {
   },
   yiff: {
     '/': (req, res) => {
+      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
       res.type('image/png')
       createReadStream(heCared).pipe(res)
     }
