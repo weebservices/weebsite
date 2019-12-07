@@ -15,4 +15,7 @@ Provider.available = [
   'MAID', 'MAID_NSFW',
   'ANIME_MEMES'
 ]
+Provider.nsfw = [
+  'YURI', 'THIGH_NSFW', 'NEKO_NSFW', 'MAID_NSFW'
+]
 module.exports = Provider

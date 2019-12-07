@@ -2,6 +2,7 @@ const Konachan = require('./konachan')
 const Danbooru = require('./danbooru')
 const Yandere = require('./yandere')
 const NekosLife = require('./nekoslife')
+const Reddit = require('./reddit')
 const errors = require('../error')
 const dogstatsd = require('../dogstatsd')
 
@@ -11,11 +12,11 @@ class Providers {
       new Konachan(),
       new Danbooru(),
       new Yandere(),
-      new NekosLife()
+      new NekosLife(),
+      new Reddit()
       // @todo: nekobot.xyz
       // @todo: gelbooru
       // @todo: rule34.xxx
-      // @todo: reddit (r/Animemes)
     ]
   }
 
@@ -30,6 +31,7 @@ class Providers {
     const data = await provider.provide(type)
     if (!data) return errors['404'](req, res)
 
+    dogstatsd.increment('weeb.services.providers.all')
     dogstatsd.increment(`weeb.services.provider.${type.replace('_', '.').toLowerCase()}`)
     res.type(`image/${data[0]}`)
     data[1].body.pipe(res)

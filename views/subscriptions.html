@@ -12,7 +12,7 @@
 </head>
 <body class="bg-gray-800 text-gray-100 container mx-auto py-8">
   <h1 class="text-4xl mb-1">Weeb.Services Subscription System</h1>
-  <div class="text-xl mb-5">A random image sent to your Discord Webhook every 4 hours. No shit.</div>
+  <div class="text-xl mb-5">A random image sent to your Discord Webhook every hour. No shit.</div>
   <div class="flash mb-4 p-3 bg-red-600">This is not working yet.</div>
   <div id="flash" class="flash mb-4 p-3 hidden">emma is cute</div>
   <div id="select">
@@ -83,11 +83,12 @@
 
     // INITIALIZE BOXES
     const currentHost = location.host.split('.').shift().toUpperCase()
-    fetch('/available').then(res => res.json()).then(json => {
+    fetch('/providers').then(res => res.json()).then(json => {
       let checkboxes = ''
       const template = document.getElementById('template-checkbox').innerHTML
-      json.forEach(a => {
-        const name = a.split('_').map(e => e === 'NSFW' ? `(${e})` : e[0] + e.substring(1).toLowerCase()).join(' ')
+      json.available.forEach(a => {
+        let name = a.split('_').map(e => e !== 'NSFW' && e[0] + e.substring(1).toLowerCase()).filter(Boolean).join(' ')
+        if (json.nsfw.includes(a)) name += ' (NSFW)'
         checkboxes += template.replace('{name}', a).replace('{text}', name)
       })
       document.getElementById('checkboxes').innerHTML = checkboxes
@@ -129,6 +130,12 @@
     document.getElementById('delet-this').addEventListener('click', async () => {
       console.log('o')
     })
+
+    if (location.hash === '#new') {
+      document.getElementById('select-new').click()
+    } else if (location.hash === '#delet') {
+      document.getElementById('select-delet').click()
+    }
   </script>
   <script src="https://www.google.com/recaptcha/api.js?onload=googleAteMyData&render=explicit"></script>
 </body>

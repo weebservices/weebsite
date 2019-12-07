@@ -1,16 +1,18 @@
 const { join } = require('path')
 const { createReadStream } = require('fs')
 const express = require('express')
+const hook = require('./hook')
 const Providers = require('./providers')
 const Provider = require('./providers/provider')
 const subscriptions = require('./subscriptions')
 const dogstatsd = require('./dogstatsd')
+const database = require('./db')
 const errors = require('./error')
+
+const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 
 const providers = new Providers()
 const app = express()
-
-const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 
 const services = {
   weeb: {
@@ -55,6 +57,9 @@ const services = {
   loli: {
     '/': (req, res) => providers.provide(req, res, 'LOLI')
   },
+  memes: {
+    '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
+  },
   yiff: {
     '/': (req, res) => {
       if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
@@ -87,7 +92,7 @@ app.get('/subscriptions', (req, res) => {
 app.post('/subscriptions', subscriptions.post)
 app.delete('/subscriptions', subscriptions.del)
 
-app.get('/available', (req, res) => res.json(Provider.available))
+app.get('/providers', (req, res) => res.json({ available: Provider.available, nsfw: Provider.nsfw }))
 app.get('/can/i/have/weeb/material/in/my/discord/server', (req, res) => res.redirect('/subscriptions'))
 
 app.get('**', (req, res) => {
@@ -121,4 +126,8 @@ app.use((err, req, res, _) => { // eslint-disable-line no-unused-vars
   return errors['5xx'](req, res)
 })
 
-app.listen(1539)
+;(async () => {
+  await database.initialize()
+  hook.schedule()
+  app.listen(1539)
+})()

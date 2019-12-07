@@ -10,7 +10,8 @@
   "dependencies": {
     "express": "^4.16.3",
     "hot-shots": "^6.8.2",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "sqlite": "^3.0.3"
   },
   "devDependencies": {
     "eslint": "^6.7.2",

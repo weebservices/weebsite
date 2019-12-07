@@ -7,6 +7,8 @@ node_modules
 # stuff
 *.nogit.*
 .travisci/private_rsa_keys.tar.gz
+weeb.services.db
+_migration.txt
 keys.json
 
 # i'll maybe set it up later
