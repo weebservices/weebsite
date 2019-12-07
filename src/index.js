@@ -18,7 +18,8 @@ const services = {
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/isemmacute': (req, res) => {
-      res.send('<h1>yes</h1>')
+      res.type('text/html')
+      createReadStream(join(__dirname, '..', 'views', 'emma.html')).pipe(res)
     }
   },
   yuri: {
@@ -69,11 +70,15 @@ app.use((req, res, next) => {
   next()
 })
 
-app.get('/available', (req, res) => res.json(Provider.available))
-app.get('/subscriptions', subscriptions.html)
+app.use('/assets', express.static(join(__dirname, '..', 'assets')))
+app.get('/subscriptions', (req, res) => {
+  res.type('text/html')
+  createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
+})
 app.post('/subscriptions', subscriptions.post)
 app.delete('/subscriptions', subscriptions.del)
 
+app.get('/available', (req, res) => res.json(Provider.available))
 app.get('/can/i/have/weeb/material/in/my/discord/server', (req, res) => res.redirect('/subscriptions'))
 
 app.get('**', (req, res) => {

@@ -1,7 +1,5 @@
 const fetch = require('node-fetch')
-const { join } = require('path')
 const { stringify } = require('qs')
-const { createReadStream } = require('fs')
 
 const Provider = require('./providers/provider')
 const keys = require('../keys.json')
@@ -16,15 +14,10 @@ const verifyRecaptcha = async (code) => {
       response: code
     })
   }).then(res => res.json())
-  console.log(res)
   return res.success
 }
 
 module.exports = {
-  html: (req, res) => {
-    res.type('text/html')
-    createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
-  },
   post: async (req, res) => {
     if (!dickswordHookRegex.test(req.body.url)) {
       return res.json({ type: 'error', content: 'Invalid webhook' })
