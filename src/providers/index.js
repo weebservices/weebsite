@@ -3,7 +3,7 @@ const Danbooru = require('./danbooru')
 const Yandere = require('./yandere')
 const NekosLife = require('./nekoslife')
 const errors = require('../error')
-const dogstatsd = require('./dogstatsd')
+const dogstatsd = require('../dogstatsd')
 
 class Providers {
   constructor () {
