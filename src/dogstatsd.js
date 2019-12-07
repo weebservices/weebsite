@@ -1,4 +1,4 @@
-const StatsD = require('hot-shots')
+const StatsD = require('node-dogstatsd')
 module.exports = new StatsD({
-  globalTags: [ 'service:weeb.services' ]
+  globalTags: { service: 'weeb.services' }
 })

@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "express": "^4.16.3",
-    "hot-shots": "^6.8.2",
+    "node-dogstatsd": "^0.0.7",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
