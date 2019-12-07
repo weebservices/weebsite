@@ -16,7 +16,7 @@ const services = {
   weeb: {
     '/': (req, res) => {
       res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
-      dogstatsd.increment('home.view')
+      dogstatsd.increment('weeb.services.home.view')
     },
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
@@ -24,7 +24,7 @@ const services = {
     '/isemmacute': (req, res) => {
       res.type('text/html')
       createReadStream(join(__dirname, '..', 'views', 'emma.html')).pipe(res)
-      dogstatsd.increment('emma.view')
+      dogstatsd.increment('weeb.services.emma.view')
     }
   },
   yuri: {
@@ -33,7 +33,7 @@ const services = {
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
     '/lair': (req, res) => {
-      dogstatsd.increment('provider.senko.invite')
+      dogstatsd.increment('weeb.services.provider.senko.invite')
       res.redirect('https://discord.gg/UrHhtWE')
     }
   },
@@ -82,7 +82,7 @@ app.use('/assets', express.static(join(__dirname, '..', 'assets')))
 app.get('/subscriptions', (req, res) => {
   res.type('text/html')
   createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
-  dogstatsd.increment('subscriptions.view')
+  dogstatsd.increment('weeb.services.subscriptions.view')
 })
 app.post('/subscriptions', subscriptions.post)
 app.delete('/subscriptions', subscriptions.del)

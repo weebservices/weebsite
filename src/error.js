@@ -9,11 +9,11 @@ module.exports = {
   404: (req, res) => {
     res.type('image/png')
     createReadStream(asset404).pipe(res)
-    dogstatsd.increment('error.404')
+    dogstatsd.increment('weeb.services.error.404')
   },
   '5xx': (req, res) => {
     res.type('image/gif') // btw gif is pronounced /ɡɪf/
     createReadStream(asset5xx).pipe(res)
-    dogstatsd.increment('error.5xx')
+    dogstatsd.increment('weeb.services.error.5xx')
   }
 }

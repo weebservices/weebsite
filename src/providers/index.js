@@ -30,7 +30,7 @@ class Providers {
     const data = await provider.provide(type)
     if (!data) return errors['404'](req, res)
 
-    dogstatsd.increment(`provider.${type.replace('_', '.').toLowerCase()}`)
+    dogstatsd.increment(`weeb.services.provider.${type.replace('_', '.').toLowerCase()}`)
     res.type(`image/${data[0]}`)
     data[1].body.pipe(res)
   }
