@@ -51,7 +51,7 @@ class Database {
 
   createSubscription (hook, subs) {
     const [ id, sig ] = this._splitHook(hook)
-    return this.sqlite.run('INSERT INTO subscriptions VALUES (?, ?, ?)', id, id, sig, JSON.stringify(subs))
+    return this.sqlite.run('INSERT INTO subscriptions VALUES (?, ?, ?)', id, sig, JSON.stringify(subs))
   }
 
   deleteSubscription (hook) {
