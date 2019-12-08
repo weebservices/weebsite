@@ -1,4 +1,5 @@
 const { readdirSync } = require('fs')
+const cron = require('node-cron')
 const fetch = require('node-fetch')
 const FormData = require('form-data')
 const database = require('./db')
@@ -33,7 +34,7 @@ class Hook {
   }
 
   schedule () {
-    setInterval(this._hookDelivery.bind(this), 1 * 3600 * 1e3)
+    cron.schedule('0 * * * *', () => this._hookDelivery.bind(this))
   }
 
   async _hookDelivery () {

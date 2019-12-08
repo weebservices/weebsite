@@ -19,6 +19,11 @@ const services = {
       res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
       dogstatsd.increment('weeb.services.home.view')
     },
+    '/discord': (req, res) => {
+      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
+      dogstatsd.increment('weeb.services.invite.discord')
+      res.redirect('https://discord.gg/4KhX4SY')
+    },
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
@@ -34,7 +39,8 @@ const services = {
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
     '/lair': (req, res) => {
-      dogstatsd.increment('weeb.services.provider.senko.invite')
+      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
+      dogstatsd.increment('weeb.services.invite.lair')
       res.redirect('https://discord.gg/UrHhtWE')
     }
   },
