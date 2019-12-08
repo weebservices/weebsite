@@ -34,7 +34,7 @@ class Hook {
   }
 
   schedule () {
-    cron.schedule('0 * * * *', () => this._hookDelivery.bind(this))
+    cron.schedule('0 * * * *', () => this._hookDelivery())
   }
 
   async _hookDelivery () {
