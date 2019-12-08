@@ -53,9 +53,6 @@ const services = {
     '/': (req, res) => providers.provide(req, res, 'NEKO'),
     '/kinky': (req, res) => providers.provide(req, res, 'NEKO_NSFW')
   },
-  loli: {
-    '/': (req, res) => providers.provide(req, res, 'LOLI')
-  },
   memes: {
     '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
   },

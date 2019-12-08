@@ -9,7 +9,7 @@ class Provider {
 }
 
 Provider.available = [
-  'SENKO', 'YURI', 'LOLI', 'KANNA',
+  'SENKO', 'YURI', 'KANNA',
   'THIGH', 'THIGH_NSFW',
   'NEKO', 'NEKO_NSFW',
   'MAID', 'MAID_NSFW',
