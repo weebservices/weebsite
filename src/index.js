@@ -2,16 +2,15 @@ const { join } = require('path')
 const { createReadStream } = require('fs')
 const express = require('express')
 const hook = require('./hook')
-const Providers = require('./providers')
 const Provider = require('./providers/provider')
 const subscriptions = require('./subscriptions')
+const providers = require('./providers')
 const dogstatsd = require('./dogstatsd')
 const database = require('./db')
 const errors = require('./error')
 
 const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 
-const providers = new Providers()
 const app = express()
 
 const services = {

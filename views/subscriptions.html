@@ -13,7 +13,6 @@
 <body class="bg-gray-800 text-gray-100 container mx-auto py-8">
   <h1 class="text-4xl mb-1">Weeb.Services Subscription System</h1>
   <div class="text-xl mb-5">A random image sent to your Discord Webhook every hour. No shit.</div>
-  <div class="flash mb-4 p-3 bg-red-600">This is not working yet.</div>
   <div id="flash" class="flash mb-4 p-3 hidden">emma is cute</div>
   <div id="select">
     <div class="mb-5">
@@ -128,7 +127,17 @@
       }
     })
     document.getElementById('delet-this').addEventListener('click', async () => {
-      console.log('o')
+      const url = document.querySelector('[name="discord-webhook-delet"]').value
+      const res = await fetch(location.pathname, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, recaptchaResponse })
+      }).then(res => res.json())
+      grecaptcha.reset(widgetIdDel)
+      flash(res.content, res.type)
+      if (res.type === 'success') {
+        document.getElementById('delet-back').click()
+      }
     })
 
     if (location.hash === '#new') {

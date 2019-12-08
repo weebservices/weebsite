@@ -25,10 +25,7 @@ class Providers {
       return res.sendStatus(404)
     }
 
-    const provider = this._getProvider(type)
-    if (!provider) return errors['404'](req, res)
-
-    const data = await provider.provide(type)
+    const data = await this.provideStream(type)
     if (!data) return errors['404'](req, res)
 
     dogstatsd.increment('weeb.services.providers.all')
@@ -37,10 +34,16 @@ class Providers {
     data[1].body.pipe(res)
   }
 
+  provideStream (type) {
+    const provider = this._getProvider(type)
+    if (!provider) return null
+    return provider.provide(type)
+  }
+
   _getProvider (type) {
     const available = this.providers.filter(p => p.canProvide(type))
     return available[Math.floor(Math.random() * available.length)]
   }
 }
 
-module.exports = Providers
+module.exports = new Providers()
