@@ -45,7 +45,7 @@ module.exports = {
       dogstatsd.increment('weeb.services.subscriptions.fail.duplicate')
       return res.json({ type: 'error', content: 'Webhook already registered' })
     }
-    const success = await hook.notifySuccess()
+    const success = await hook.notifySuccess(req.body.url)
     if (!success) {
       dogstatsd.increment('weeb.services.subscriptions.fail')
       dogstatsd.increment('weeb.services.subscriptions.fail.hook_failure')
