@@ -31,7 +31,7 @@
     <h2 class="text-3xl mb-4">New Subscription</h2>
     <div class="mb-4">
       <label class="text-xl mb-2 block">Discord Webhook URL</label>
-      <input class="bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500" type='text' name='discord-webhook-new'>
+      <input class="bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500" type="text" name="discord-webhook-new" value="" autocomplete="off">
     </div>
     <div class="mb-4">
       <label class="text-xl mb-2 block">What you want</label>
@@ -45,7 +45,7 @@
     <h2 class="text-3xl mb-4">Delete a Subscription</h2>
     <div class="mb-4">
       <label class="text-xl mb-2 block">Discord Webhook URL</label>
-      <input class="bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500" type='text' name='discord-webhook-delet'>
+      <input class="bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500" type="text" name="discord-webhook-delet" value="" autocomplete="off">
     </div>
     <div id="delet-recaptcha" class="my-4"></div>
     <button class="bg-orange-500 hover:bg-orange-600 rounded p-2 mr-2" id="delet-this">Delete</button>
@@ -57,7 +57,7 @@
         <div class="bg-gray-700 shadow w-6 h-6 p-1 flex justify-center items-center mr-2">
           <input type="checkbox" class="hidden" name="{name}">
           <svg class="hidden w-4 h-4 text-orange-500 pointer-events-none" viewBox="0 0 172 172">
-            <path d="M145.433 37.933L64.5 118.8658 33.7337 88.0996l-10.134 10.1341L64.5 139.1341l91.067-91.067z" fill="currentColor" stroke-width="1"/>
+            <path d="M145.433 37.933L64.5 118.8658 33.7337 88.0996l-10.134 10.1341L64.5 139.1341l91.067-91.067z" fill="currentColor"/>
           </svg>
         </div>
         <span class="select-none">{text}</span>
@@ -81,6 +81,7 @@
     }
 
     // INITIALIZE BOXES
+    const checkboxesContainer = document.getElementById('checkboxes')
     const currentHost = location.host.split('.').shift().toUpperCase()
     fetch('/providers').then(res => res.json()).then(json => {
       let checkboxes = ''
@@ -90,7 +91,10 @@
         if (json.nsfw.includes(a)) name += ' (NSFW)'
         checkboxes += template.replace('{name}', a).replace('{text}', name)
       })
-      document.getElementById('checkboxes').innerHTML = checkboxes
+      checkboxesContainer.innerHTML = checkboxes
+      setTimeout(() => {
+        checkboxesContainer.querySelectorAll('input').forEach(e => e.checked = currentHost === e.name)
+      }, 0)
     })
 
     // BUTTONS

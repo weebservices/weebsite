@@ -4,7 +4,7 @@ const Provider = require('./provider')
 class Danbooru extends Provider {
   constructor () {
     super([
-      'SENKO', 'KANNA', 'YURI',
+      'SENKO', 'KANNA', 'YURI', 'TIED',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW'
@@ -19,6 +19,8 @@ class Danbooru extends Provider {
         return this._getPost('kanna_kamui', [ Danbooru.SAFE ])
       case 'YURI':
         return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'TIED':
+        return this._getPost('bound', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
       case 'THIGH':
         return this._getPost('thighs', [ Danbooru.SAFE ])
       case 'THIGH_NSFW':

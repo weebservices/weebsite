@@ -10,7 +10,6 @@ const database = require('./db')
 const errors = require('./error')
 
 const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
-
 const app = express()
 
 const services = {
@@ -33,9 +32,6 @@ const services = {
       dogstatsd.increment('weeb.services.emma.view')
     }
   },
-  yuri: {
-    '/': (req, res) => providers.provide(req, res, 'YURI')
-  },
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
     '/lair': (req, res) => {
@@ -47,9 +43,11 @@ const services = {
   kanna: {
     '/': (req, res) => providers.provide(req, res, 'KANNA')
   },
-  maid: {
-    '/': (req, res) => providers.provide(req, res, 'MAID'),
-    '/kinky': (req, res) => providers.provide(req, res, 'MAID_NSFW')
+  yuri: {
+    '/': (req, res) => providers.provide(req, res, 'YURI')
+  },
+  tied: {
+    '/': (req, res) => providers.provide(req, res, 'TIED')
   },
   thigh: {
     '/': (req, res) => providers.provide(req, res, 'THIGH'),
@@ -58,6 +56,10 @@ const services = {
   neko: {
     '/': (req, res) => providers.provide(req, res, 'NEKO'),
     '/kinky': (req, res) => providers.provide(req, res, 'NEKO_NSFW')
+  },
+  maid: {
+    '/': (req, res) => providers.provide(req, res, 'MAID'),
+    '/kinky': (req, res) => providers.provide(req, res, 'MAID_NSFW')
   },
   memes: {
     '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
