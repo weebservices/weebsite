@@ -3,8 +3,10 @@ const Danbooru = require('./danbooru')
 const Yandere = require('./yandere')
 const NekosLife = require('./nekoslife')
 const Reddit = require('./reddit')
+const Provider = require('./provider')
 const errors = require('../error')
 const dogstatsd = require('../dogstatsd')
+const yeetbot = require('../yeetbot')
 
 class Providers {
   constructor () {
@@ -18,17 +20,19 @@ class Providers {
       // @todo: gelbooru
       // @todo: rule34.xxx
     ]
+
+    this.provide = yeetbot.wrap(this._provide.bind(this))
   }
 
-  async provide (req, res, type) {
-    if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) {
-      return res.sendStatus(404)
-    }
-
+  async _provide (req, res, type) {
     const data = await this.provideStream(type)
     if (!data) return errors['404'](req, res)
 
-    dogstatsd.increment('weeb.services.providers.all')
+    if (Provider.nsfw.includes(type)) {
+      dogstatsd.increment('weeb.services.providers.nsfw')
+    } else {
+      dogstatsd.increment('weeb.services.providers.sfw')
+    }
     dogstatsd.increment(`weeb.services.provider.${type.replace('_', '.').toLowerCase()}`)
     res.type(`image/${data[0]}`)
     data[1].body.pipe(res)

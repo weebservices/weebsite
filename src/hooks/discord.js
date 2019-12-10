@@ -2,9 +2,9 @@ const { readdirSync } = require('fs')
 const cron = require('node-cron')
 const fetch = require('node-fetch')
 const FormData = require('form-data')
-const database = require('./db')
-const providers = require('./providers')
-const Provider = require('./providers/provider')
+const database = require('../db')
+const providers = require('../providers')
+const Provider = require('../providers/provider')
 const avatars = readdirSync('assets/avatars')
 const hearts = [ '❤️', '💙', '🤎', '💚', '🧡', '💜', '💛' ]
 
@@ -41,6 +41,7 @@ class Hook {
     const subscribed = await database.fetchSubscriptions()
     for (const subbed of subscribed) {
       // @todo: stats of failed uploads
+      // @todo: nuke subscription if failed too many times
       await this._sendImage(this._buildUrl(subbed.id, subbed.signature), JSON.parse(subbed.services))
       await this._sleep(100)
     }

@@ -1,13 +1,14 @@
 const { join } = require('path')
 const { createReadStream } = require('fs')
 const express = require('express')
-const hook = require('./hook')
+const hook = require('./hooks/discord')
 const Provider = require('./providers/provider')
 const subscriptions = require('./subscriptions')
 const providers = require('./providers')
 const dogstatsd = require('./dogstatsd')
 const database = require('./db')
 const errors = require('./error')
+const yeetbot = require('./yeetbot')
 
 const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
 const app = express()
@@ -18,11 +19,12 @@ const services = {
       res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
       dogstatsd.increment('weeb.services.home.view')
     },
-    '/discord': (req, res) => {
-      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
-      dogstatsd.increment('weeb.services.invite.discord')
-      res.redirect('https://discord.gg/4KhX4SY')
-    },
+    '/discord': yeetbot.wrap(
+      (req, res) => {
+        dogstatsd.increment('weeb.services.invite.discord')
+        res.redirect('https://discord.gg/4KhX4SY')
+      }, 'DISCORD', '4KhX4SY'
+    ),
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
@@ -34,11 +36,12 @@ const services = {
   },
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
-    '/lair': (req, res) => {
-      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
-      dogstatsd.increment('weeb.services.invite.lair')
-      res.redirect('https://discord.gg/UrHhtWE')
-    }
+    '/lair': yeetbot.wrap(
+      (req, res) => {
+        dogstatsd.increment('weeb.services.invite.discord')
+        res.redirect('https://discord.gg/UrHhtWE')
+      }, 'DISCORD', 'UrHhtWE'
+    )
   },
   kanna: {
     '/': (req, res) => providers.provide(req, res, 'KANNA')
@@ -46,8 +49,9 @@ const services = {
   yuri: {
     '/': (req, res) => providers.provide(req, res, 'YURI')
   },
-  tied: {
-    '/': (req, res) => providers.provide(req, res, 'TIED')
+  bondage: {
+    // '/': (req, res) => providers.provide(req, res, 'BONDAGE'),
+    '/tied': (req, res) => providers.provide(req, res, 'TIED')
   },
   thigh: {
     '/': (req, res) => providers.provide(req, res, 'THIGH'),
@@ -65,11 +69,12 @@ const services = {
     '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
   },
   yiff: {
-    '/': (req, res) => {
-      if (req.get('user-agent') && req.get('user-agent').includes('discordapp.com')) return res.sendStatus(404)
-      res.type('image/png')
-      createReadStream(heCared).pipe(res)
-    }
+    '/': yeetbot.wrap(
+      (req, res) => {
+        res.type('image/png')
+        createReadStream(heCared).pipe(res)
+      }
+    )
   }
 }
 
@@ -130,7 +135,7 @@ app.use((err, req, res, _) => { // eslint-disable-line no-unused-vars
   return errors['5xx'](req, res)
 })
 
-;(async () => {
+; (async () => {
   await database.initialize()
   hook.schedule()
   app.listen(1539)

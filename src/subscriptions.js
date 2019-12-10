@@ -4,7 +4,7 @@ const { stringify } = require('qs')
 const Provider = require('./providers/provider')
 const dogstatsd = require('./dogstatsd')
 const database = require('./db')
-const hook = require('./hook')
+const hook = require('./hooks/discord')
 const keys = require('../keys.json')
 
 const dickswordHookRegex = /^https:\/\/(?:canary\.|ptb\.)?discordapp.com\/api\/webhooks\/(\d+)\/(?:[\w-]+)$/

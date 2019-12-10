@@ -3,11 +3,14 @@ const { existsSync, readFileSync, writeFileSync } = require('fs')
 const Provider = require('./providers/provider')
 
 const migrations = [
-  [
-    'CREATE TABLE subscriptions (`id` VARCHAR(20) NOT NULL, `signature` VARCHAR(75) NOT NULL, `services` TEXT NOT NULL, PRIMARY KEY (`id`))'
-  ]
+  [ 'CREATE TABLE subscriptions (`id` VARCHAR(20) NOT NULL, `signature` VARCHAR(75) NOT NULL, `services` TEXT NOT NULL, PRIMARY KEY (`id`))' ]
+  // [ // soon
+  //  'ALTER TABLE subscriptions ADD COLUMN `type` VARCHAR(16)',
+  //  'UPDATE subscriptions SET type = "DISCORD"'
+  // ]
 ]
 
+// @todo: Un-tie webhook checkings
 class Database {
   async initialize () {
     this.sqlite = await sqlite.open('weeb.services.db')
@@ -27,7 +30,7 @@ class Database {
       const services = JSON.parse(sub.services)
       const invalid = services.filter(s => !Provider.available.includes(s))
       if (invalid.length > 0) {
-        const hook = require('./hook') // cyclic
+        const hook = require('./hooks/discord') // cyclic
 
         hook.notifyRemoval(sub.id, sub.signature, invalid, invalid.length === services.length)
         if (invalid.length === services.length) {
