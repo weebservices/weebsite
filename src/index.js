@@ -68,6 +68,21 @@ const services = {
   memes: {
     '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
   },
+  futa: {
+    '/': (req, res) => providers.provide(req, res, 'FUTA')
+  },
+  femdom: {
+    '/': (req, res) => providers.provide(req, res, 'FEMDOM')
+  },
+  trap: {
+    '/': (req, res) => providers.provide(req, res, 'TRAP')
+  },
+  tentacle: {
+    '/': (req, res) => providers.provide(req, res, 'TENTACLE')
+  },
+  yaoi: {
+    '/': (req, res) => providers.provide(req, res, 'YAOI')
+  },
   yiff: {
     '/': yeetbot.wrap(
       (req, res) => {
