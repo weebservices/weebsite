@@ -49,8 +49,8 @@ const services = {
   yuri: {
     '/': (req, res) => providers.provide(req, res, 'YURI')
   },
-  bondage: {
-    // '/': (req, res) => providers.provide(req, res, 'BONDAGE'),
+  bdsm: {
+    '/': (req, res) => providers.provide(req, res, 'BDSM'),
     '/tied': (req, res) => providers.provide(req, res, 'TIED')
   },
   thigh: {
@@ -150,7 +150,7 @@ app.use((err, req, res, _) => { // eslint-disable-line no-unused-vars
   return errors['5xx'](req, res)
 })
 
-; (async () => {
+;(async () => {
   await database.initialize()
   hook.schedule()
   app.listen(1539)

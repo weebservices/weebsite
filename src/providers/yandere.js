@@ -5,6 +5,7 @@ class Yandere extends Provider {
   constructor () {
     super([
       'SENKO', 'KANNA', 'YURI',
+      'BDSM',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW'
@@ -19,6 +20,8 @@ class Yandere extends Provider {
         return this._getPost('kanna_kamui', [ Yandere.SAFE ])
       case 'YURI':
         return this._getPost('yuri', [ Yandere.SAFE, Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
+      case 'BDSM':
+        return this._getPost('bondage', [ Yandere.SAFE, Yandere.QUESTIONABLE, Yandere.EXPLICIT ])
       case 'THIGH':
         return this._getPost('thighhighs', [ Yandere.SAFE ])
       case 'THIGH_NSFW':

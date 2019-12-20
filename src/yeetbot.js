@@ -1,18 +1,18 @@
 const { join } = require('path')
 const { readFileSync } = require('fs')
-const fetch = require('fetch')
+const fetch = require('node-fetch')
 const dogstatsd = require('./dogstatsd')
 
 class YeetBot {
   wrap (fn, type = 'NONE', data) {
-    return (req, res) => {
+    return (req, res, t) => {
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
         if (type === 'DISCORD') return this._answerDiscord(data, res)
         return res.sendStatus(404)
       }
-      return fn(req, res, type)
+      return fn(req, res, t)
     }
   }
 
@@ -61,6 +61,7 @@ YeetBot.UserAgents = {
   twitter: [ 'TwitterBot' ],
   facebook: [ 'Facebot', 'facebookexternalhit/' ],
   keybase: [ 'Keybase' ],
-  skype: [ 'SkypeUriPreview' ]
+  skype: [ 'SkypeUriPreview' ],
+  reddit: [ 'redditbot/' ]
 }
 module.exports = new YeetBot()
