@@ -4,23 +4,42 @@ const Provider = require('./provider')
 class Reddit extends Provider {
   constructor () {
     super([
-      'THIGH_NSFW', 'ANIME_MEMES'
+      'THIGH_NSFW', 'ANIME_MEMES', 'YURI', 'MAID',
+      'TRAP', 'FUTA', 'FEMDOM', 'BDSM', 'TENTACLE', 'YAOI'
     ])
   }
 
   provide (type) {
-    const thighSubs = [ 'thighdeology', 'thighhighhentai' ]
     switch (type) {
+      case 'YURI':
+        return this._getPost('yuri', true)
+      case 'MAID':
+        return this._getPost([ 'MaidHentai', 'HentaiMaid' ], true)
       case 'THIGH_NSFW':
-        return this._getPost(thighSubs[Math.floor(Math.random() * thighSubs.length)], true)
+        return this._getPost([ 'thighdeology', 'thighhighhentai' ], true)
       case 'ANIME_MEMES':
         return this._getPost('animemes', false)
+      case 'FUTA':
+        return this._getPost([ 'FutaCum', 'futanari', 'futanari_comics', 'FutanariPegging' ], true)
+      case 'FEMDOM':
+        return this._getPost('hentaifemdom', true)
+      case 'TRAP':
+        return this._getPost([ 'traphentai', 'DeliciousTraps' ], true)
+      case 'BDSM':
+        return this._getPost([ 'hentaibondage', 'HookedUpHentai', 'HardcodeHentaiBondage' ], true)
+      case 'TENTACLE':
+        return this._getPost([ 'consentacles', 'Tentai' ], true)
+      case 'YAOI':
+        return this._getPost('yaoi', true)
       default:
         return null
     }
   }
 
   async _getPost (sub, acceptNsfw) {
+    if (Array.isArray(sub)) {
+      sub = sub[Math.floor(Math.random() * sub.length)]
+    }
     const hot = await fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=100`, {
       headers: {
         'User-Agent': 'NodeJS:weeb.services:v0.0.1 (by /u/Bowser65) - https://weeb.services/github'

@@ -14,3 +14,6 @@ keys.json
 # i'll maybe set it up later
 .travis.yml
 .travisci
+
+# eclipse bs
+/.project
