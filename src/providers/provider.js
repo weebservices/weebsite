@@ -9,13 +9,14 @@ class Provider {
 }
 
 Provider.available = [
-  'SENKO', 'KANNA', 'YURI', 'TIED',
+  'SENKO', 'KANNA', 'YURI',
+  'BDSM', 'TIED',
   'THIGH', 'THIGH_NSFW',
   'NEKO', 'NEKO_NSFW',
   'MAID', 'MAID_NSFW',
   'ANIME_MEMES'
 ]
 Provider.nsfw = [
-  'YURI', 'TIED', 'THIGH_NSFW', 'NEKO_NSFW', 'MAID_NSFW'
+  'YURI', 'BONDAGE', 'TIED', 'THIGH_NSFW', 'NEKO_NSFW', 'MAID_NSFW'
 ]
 module.exports = Provider
