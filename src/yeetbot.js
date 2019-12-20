@@ -1,8 +1,11 @@
+const { join } = require('path')
+const { readFileSync } = require('fs')
+const fetch = require('fetch')
 const dogstatsd = require('./dogstatsd')
 
 class YeetBot {
   wrap (fn, type = 'NONE', data) {
-    return (req, res, type) => {
+    return (req, res) => {
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
@@ -20,8 +23,34 @@ class YeetBot {
     )
   }
 
-  _answerDiscord (invite, res) {
-    // @todo
+  async _answerDiscord (invite, res) {
+    const data = await fetch(`https://discordapp.com/api/v6/invites/${invite}?with_counts=true`)
+      .then(res => res.json())
+      .catch(_ => null)
+    if (data) {
+      let img, card
+      if (data.guild.features.includes('INVITE_SPLASH') && data.guild.splash) {
+        card = 'summary_large_image'
+        img = `https://cdn.discordapp.com/splashes/${data.guild.id}/${data.guild.splash}.jpg?size=1024`
+      } else {
+        card = 'summary'
+        if (data.guild.icon) {
+          img = `https://cdn.discordapp.com/icons/${data.guild.id}/${data.guild.icon}.png?size=128`
+        } else {
+          img = 'https://cdn.discordapp.com/embed/avatars/0.png'
+        }
+      }
+
+      res.type('text/html')
+      return res.send(
+        readFileSync(join(__dirname, '..', 'views', 'subscriptions.html'), 'utf8')
+          .replace('{card}', card)
+          .replace('{image}', img)
+          .replace('{server}', data.guild.name)
+          .replace('{online}', data.approximate_presence_count)
+          .replace('{members}', data.approximate_member_count)
+      )
+    }
     res.sendStatus(404)
   }
 }
@@ -30,6 +59,8 @@ YeetBot.UserAgents = {
   discord: [ 'https://discordapp.com' ],
   telegram: [ 'TelegramBot' ],
   twitter: [ 'TwitterBot' ],
-  facebook: [ 'Facebot', 'facebookexternalhit/' ]
+  facebook: [ 'Facebot', 'facebookexternalhit/' ],
+  keybase: [ 'Keybase' ],
+  skype: [ 'SkypeUriPreview' ]
 }
 module.exports = new YeetBot()
