@@ -64,6 +64,7 @@ const services = {
   trap: basicService('TRAP'),
   tentacle: basicService('TENTACLE'),
   yaoi: basicService('YAOI'),
+  handholding: basicService('HANDHOLDING'),
   yiff: {
     '/': http.wrapYeetBots(
       (req, res) => {
