@@ -22,11 +22,13 @@ const Provider = require('./provider')
 class Konachan extends Provider {
   constructor () {
     super([
-      'SENKO', 'KANNA', 'YURI',
-      'BDSM', 'TIED',
+      'SENKO', 'KANNA', 'TOHRU',
+      'YURI', 'BDSM', 'TIED',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
-      'MAID', 'MAID_NSFW'
+      'MAID', 'MAID_NSFW',
+      'FUTA', 'TENTACLE',
+      'TRAP' // why
     ])
   }
 
@@ -36,6 +38,8 @@ class Konachan extends Provider {
         return this._getPost('senko', [ Konachan.SAFE ])
       case 'KANNA':
         return this._getPost('kanna_kamui', [ Konachan.SAFE ])
+      case 'TOHRU':
+        return this._getPost('tooru_(maidragon)', [ Konachan.SAFE ])
       case 'YURI':
         return this._getPost('yuri', [ Konachan.SAFE, Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
       case 'BDSM':
@@ -54,14 +58,22 @@ class Konachan extends Provider {
         return this._getPost('maid', [ Konachan.SAFE ])
       case 'MAID_NSFW':
         return this._getPost('maid', [ Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+      case 'FUTA':
+        return this._getPost('futanari', [ Konachan.SAFE, Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+      case 'TENTACLE':
+        return this._getPost('tentacles', [ Konachan.SAFE, Konachan.QUESTIONABLE, Konachan.EXPLICIT ])
+      case 'TRAP':
+        return this._getPost('trap', [ Konachan.SAFE, Konachan.QUESTIONABLE, Konachan.EXPLICIT ], true)
       default:
         return null
     }
   }
 
-  async _getPost (tag, ratings) {
+  async _getPost (tag, ratings, allowInsanity) {
     const allPosts = await fetch(`https://konachan.com/post.json?tags=${tag}&limit=500`).then(res => res.json())
-    const posts = allPosts.filter(post => ratings.includes(post.rating) && !post.tags.split(' ').includes('trap'))
+    const posts = allPosts.filter(post =>
+      post.file_url && ratings.includes(post.rating) && (allowInsanity || !post.tags.split(' ').includes('trap'))
+    )
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
       post.file_url.split('.').pop(),

@@ -21,6 +21,7 @@ const subDiscord = require('./subscriptions/discord')
 const { http, errors, dogstatsd } = require('../utils')
 
 module.exports = {
+  '/robots.txt': (req, res) => res.end('User-agent: *\nDisallow: /'),
   '/subscriptions/telegram': (req, res) => {
     res.end('soon')
   },

@@ -22,11 +22,15 @@ const Provider = require('./provider')
 class Danbooru extends Provider {
   constructor () {
     super([
-      'SENKO', 'KANNA', 'YURI',
-      'BDSM', 'TIED',
+      'SENKO', 'KANNA', 'TOHRU',
+      'YURI', 'BDSM', 'TIED',
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
-      'MAID', 'MAID_NSFW'
+      'MAID', 'MAID_NSFW',
+      'HANDHOLDING',
+      'FUTA', 'FEMDOM', 'FEET',
+      'TENTACLE', 'YAOI',
+      'TRAP' // no comment
     ])
   }
 
@@ -36,6 +40,8 @@ class Danbooru extends Provider {
         return this._getPost('senko_(sewayaki_kitsune_no_senko-san)', [ Danbooru.SAFE ])
       case 'KANNA':
         return this._getPost('kanna_kamui', [ Danbooru.SAFE ])
+      case 'TOHRU':
+        return this._getPost('tooru_(maidragon)', [ Danbooru.SAFE ])
       case 'YURI':
         return this._getPost('yuri', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
       case 'BDSM':
@@ -54,14 +60,30 @@ class Danbooru extends Provider {
         return this._getPost('maid', [ Danbooru.SAFE ])
       case 'MAID_NSFW':
         return this._getPost('maid', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'HANDHOLDING':
+        return this._getPost('holding_hands', [ Danbooru.SAFE ])
+      case 'FUTA':
+        return this._getPost('futanari', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'FEMDOM':
+        return this._getPost('femdom', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'FEET':
+        return this._getPost('feet', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'TENTACLE':
+        return this._getPost('tentacles', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'YAOI':
+        return this._getPost('yaoi', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
+      case 'TRAP':
+        return this._getPost('trap', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ], true)
       default:
         return null
     }
   }
 
-  async _getPost (tag, ratings) {
+  async _getPost (tag, ratings, allowInsanity) {
     const allPosts = await fetch(`https://danbooru.donmai.us/posts.json?tags=${tag}&limit=200`).then(res => res.json())
-    const posts = allPosts.filter(post => !post.is_pending && post.file_url && ratings.includes(post.rating) && !post.tag_string.split(' ').includes('trap'))
+    const posts = allPosts.filter(post =>
+      post.file_url && ratings.includes(post.rating) && (allowInsanity || !post.tag_string.split(' ').includes('trap'))
+    )
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
       post.file_url.split('.').pop(),

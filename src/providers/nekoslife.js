@@ -22,7 +22,9 @@ const Provider = require('./provider')
 class NekosLife extends Provider {
   constructor () {
     super([
-      'YURI', 'NEKO', 'NEKO_NSFW'
+      'YURI', 'NEKO', 'NEKO_NSFW',
+      'FUTA', 'FEMDOM', 'FEET',
+      'TRAP' // .
     ])
   }
 
@@ -34,6 +36,14 @@ class NekosLife extends Provider {
         return this._getImg('neko')
       case 'NEKO_NSFW':
         return this._getImg('lewd')
+      case 'FUTA':
+        return this._getImg('futanari')
+      case 'FEMDOM':
+        return this._getImg('femdom')
+      case 'FEET':
+        return this._getImg('erofeet')
+      case 'TRAP':
+        return this._getImg('trap')
       default:
         return null
     }

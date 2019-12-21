@@ -23,10 +23,10 @@ class Reddit extends Provider {
   constructor () {
     super([
       'YURI', 'BDSM', 'THIGH_NSFW',
-      'MAID_NSFW', 'ANIME_MEMES',
-      'FUTA', 'FEMDOM', 'TRAP',
-      'TENTACLE', 'YAOI',
-      'HANDHOLDING'
+      'MAID_NSFW', 'HANDHOLDING',
+      'ANIME_MEMES', 'FUTA',
+      'FEMDOM', 'TENTACLE', 'YAOI',
+      'TRAP' // Sadly...
     ])
   }
 
@@ -40,20 +40,20 @@ class Reddit extends Provider {
         return this._getPost([ 'thighdeology', 'thighhighhentai' ], true)
       case 'MAID_NSFW':
         return this._getPost([ 'MaidHentai', 'HentaiMaid' ], true)
+      case 'HANDHOLDING':
+        return this._getPost('handholding', true) // r/handholding is marked nsfw but doesn't have anything nsfw
       case 'ANIME_MEMES':
         return this._getPost('animemes', false)
       case 'FUTA':
         return this._getPost([ 'FutaCum', 'futanari', 'futanari_comics', 'FutanariPegging' ], true)
       case 'FEMDOM':
         return this._getPost('hentaifemdom', true)
-      case 'TRAP':
-        return this._getPost([ 'traphentai', 'DeliciousTraps' ], true)
       case 'TENTACLE':
         return this._getPost([ 'consentacles', 'Tentai' ], true)
       case 'YAOI':
         return this._getPost('yaoi', true)
-      case 'HANDHOLDING':
-        return this._getPost('handholding', true) // r/handholding is marked nsfw but doesn't have anything nsfw
+      case 'TRAP':
+        return this._getPost([ 'traphentai', 'DeliciousTraps' ], true)
       default:
         return null
     }

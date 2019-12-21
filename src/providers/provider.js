@@ -27,18 +27,21 @@ class Provider {
 }
 
 Provider.available = [
-  'SENKO', 'KANNA', 'YURI',
-  'BDSM', 'TIED',
+  'SENKO', 'KANNA', 'TOHRU',
+  'YURI', 'BDSM', 'TIED',
   'THIGH', 'THIGH_NSFW',
   'NEKO', 'NEKO_NSFW',
   'MAID', 'MAID_NSFW',
+  'HANDHOLDING', 'HANDHOLDING_NSFW',
   'ANIME_MEMES',
-  'FUTA', 'FEMDOM', 'TRAP',
+  'FUTA', 'FEMDOM', 'FEET',
   'TENTACLE', 'YAOI',
-  'HANDHOLDING'
+  'TRAP' // Yes it exists and its a *shame*
 ]
 Provider.nsfw = [
   'YURI', 'BONDAGE', 'TIED', 'THIGH_NSFW', 'NEKO_NSFW', 'MAID_NSFW',
-  'FUTA', 'FEMDOM', 'TRAP', 'TENTACLE', 'YAOI'
+  'HANDHOLDING_NSFW', 'FUTA', 'FEMDOM', 'FEET', 'TENTACLE', 'YAOI',
+  'TRAP' // ...
 ]
+// Provider.nsfl = [ 'TRAP' ]
 module.exports = Provider

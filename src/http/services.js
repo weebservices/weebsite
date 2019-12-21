@@ -50,6 +50,7 @@ const services = {
     '/lair': http.wrapDiscord('UrHhtWE', 'weeb.services.invite.custom.lair')
   },
   kanna: basicService('KANNA'),
+  tohru: basicService('TOHRU'),
   yuri: basicService('YURI'),
   bdsm: {
     '/': provider('BDSM'),
@@ -58,13 +59,14 @@ const services = {
   thigh: basicService('THIGH', true),
   neko: basicService('NEKO', true),
   maid: basicService('MAID', true),
+  handholding: basicService('HANDHOLDING', true),
   memes: basicService('ANIME_MEMES'),
   futa: basicService('FUTA'),
   femdom: basicService('FEMDOM'),
-  trap: basicService('TRAP'),
+  feet: basicService('FEET'),
   tentacle: basicService('TENTACLE'),
   yaoi: basicService('YAOI'),
-  handholding: basicService('HANDHOLDING'),
+  trap: basicService('TRAP'),
   yiff: {
     '/': http.wrapYeetBots(
       (req, res) => {
@@ -76,7 +78,10 @@ const services = {
 }
 
 const aliases = {
-  lesbian: 'yuri'
+  www: 'weeb',
+  lesbian: 'yuri',
+  wishmeluck: 'random',
+  showmetheworstofhumanity: 'trap'
 }
 
 module.exports = {
