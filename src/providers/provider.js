@@ -34,7 +34,8 @@ Provider.available = [
   'MAID', 'MAID_NSFW',
   'ANIME_MEMES',
   'FUTA', 'FEMDOM', 'TRAP',
-  'TENTACLE', 'YAOI'
+  'TENTACLE', 'YAOI',
+  'HANDHOLDING'
 ]
 Provider.nsfw = [
   'YURI', 'BONDAGE', 'TIED', 'THIGH_NSFW', 'NEKO_NSFW', 'MAID_NSFW',

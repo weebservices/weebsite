@@ -25,7 +25,8 @@ class Reddit extends Provider {
       'YURI', 'BDSM', 'THIGH_NSFW',
       'MAID_NSFW', 'ANIME_MEMES',
       'FUTA', 'FEMDOM', 'TRAP',
-      'TENTACLE', 'YAOI'
+      'TENTACLE', 'YAOI',
+      'HANDHOLDING'
     ])
   }
 
@@ -51,6 +52,8 @@ class Reddit extends Provider {
         return this._getPost([ 'consentacles', 'Tentai' ], true)
       case 'YAOI':
         return this._getPost('yaoi', true)
+      case 'HANDHOLDING':
+        return this._getPost('handholding', true) // r/handholding is marked nsfw but doesn't have anything nsfw
       default:
         return null
     }
