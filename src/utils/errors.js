@@ -22,7 +22,7 @@ const dogstatsd = require('./dogstatsd')
 
 const asset404 = join(__dirname, '../../assets', 'not-found.png')
 const asset405 = join(__dirname, '../../assets', 'method-not-allowed.png')
-const asset5xx = join(__dirname, '../../assets', '5xx.png')
+const asset5xx = join(__dirname, '../../assets', 'error.gif')
 
 module.exports = {
   404: (req, res) => {

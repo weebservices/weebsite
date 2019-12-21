@@ -16,6 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+const http = require('http')
 const hook = require('./hooks/discord')
 const database = require('./db')
 const { errors } = require('./utils')
@@ -26,55 +27,62 @@ const { services, aliases } = require('./http/services')
   await database.initialize()
   hook.schedule()
 
-  require('http')
-    .createServer(async (req, res) => {
-      try {
-        // Request body
-        if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
-          req.body = await new Promise(resolve => {
-            let data = ''
-            req.on('data', chunk => (data += chunk))
-            req.on('end', () => resolve(JSON.parse(data)))
-          })
-        }
+  const server = http.createServer()
 
-        // Subdomain
-        const { host } = req.headers
-        if (!host) return errors['404'](req, res)
+  server.on('listening', () => {
+    console.log('Ready to serve soviet union')
+  })
 
-        let subdomain = host.split('.').shift()
-        if (host.startsWith('localhost') || host.includes('ngrok.io')) {
-          const path = req.url.split('/')
-          if (path[1] && services[path[1]]) {
-            [ , subdomain ] = path
-            delete path[1]
-          } else if (path[1] && aliases[path[1]]) {
-            subdomain = aliases[path[1]]
-            delete path[1]
-          } else {
-            subdomain = 'weeb'
-          }
-          req.url = path.join('/')
-        }
-        if (aliases[subdomain]) subdomain = aliases[subdomain]
-
-        // Global services
-        if (globalEndpoints[req.url]) {
-          return globalEndpoints[req.url](req, res)
-        }
-
-        // Specific services
-        if (req.method !== 'GET') {
-          return errors['404'](req, res)
-        }
-        const service = services[subdomain]
-        if (!service || !service[req.url]) {
-          return errors['404'](req, res)
-        }
-        service[req.url](req, res)
-      } catch (err) {
-        console.error(err)
-        return errors['5xx'](req, res)
+  server.on('request', async (req, res) => {
+    try {
+      // Request body
+      if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
+        req.body = await new Promise(resolve => {
+          let data = ''
+          req.on('data', chunk => (data += chunk))
+          req.on('end', () => resolve(JSON.parse(data)))
+        })
       }
-    }).listen(1539)
+
+      // Subdomain
+      const { host } = req.headers
+      if (!host) return errors['404'](req, res)
+
+      let subdomain = host.split('.').shift()
+      if (host.startsWith('localhost') || host.includes('ngrok.io')) {
+        const path = req.url.split('/')
+        if (path[1] && services[path[1]]) {
+          [ , subdomain ] = path
+          delete path[1]
+        } else if (path[1] && aliases[path[1]]) {
+          subdomain = aliases[path[1]]
+          delete path[1]
+        } else {
+          subdomain = 'weeb'
+        }
+        req.url = path.join('/')
+      }
+      if (aliases[subdomain]) subdomain = aliases[subdomain]
+
+      // Global services
+      if (globalEndpoints[req.url]) {
+        return globalEndpoints[req.url](req, res)
+      }
+
+      // Specific services
+      if (req.method !== 'GET') {
+        return errors['404'](req, res)
+      }
+      const service = services[subdomain]
+      if (!service || !service[req.url]) {
+        return errors['404'](req, res)
+      }
+      service[req.url](req, res)
+    } catch (e) {
+      console.error(e)
+      return errors['5xx'](req, res)
+    }
+  })
+
+  server.listen(1539)
 })()

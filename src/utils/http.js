@@ -17,18 +17,12 @@
  */
 
 const { join } = require('path')
-const { readFileSync, createReadStream } = require('fs')
+const { readFileSync } = require('fs')
 const fetch = require('node-fetch')
 const errors = require('./errors')
 const dogstatsd = require('./dogstatsd')
 
 class Http {
-  // CLIENT SIDE
-  async fetch (url, params) {
-    // @todo
-  }
-
-  // SERVER-SIDE
   redirect (res, path) {
     res.writeHead(302, { location: path })
     res.end()
@@ -41,10 +35,9 @@ class Http {
 
   html (res, file) {
     res.setHeader('content-type', 'text/html')
-    createReadStream(join(__dirname, '../../views', file)).pipe(res)
+    res.end(readFileSync(join(__dirname, '../../views', file), 'utf8').split('\n').slice(17).join('\n'))
   }
 
-  // SERVER UTILS
   wrapYeetBots (fn) {
     return (req, res, t) => {
       const bot = this._detectBot(req)
@@ -70,7 +63,6 @@ class Http {
     }
   }
 
-  // INTERNAL
   _detectBot (req) {
     const reqUa = req.headers['user-agent']
     if (!reqUa) return null
