@@ -26,7 +26,7 @@ class Danbooru extends AbstractDanbooru {
       'THIGH', 'THIGH_NSFW',
       'NEKO', 'NEKO_NSFW',
       'MAID', 'MAID_NSFW',
-      'HANDHOLDING',
+      'HANDHOLDING', 'HANDHOLDING_NSFW',
       'FUTA', 'FEMDOM', 'FEET',
       'TENTACLE', 'YAOI',
       'TRAP' // no comment
@@ -65,6 +65,8 @@ class Danbooru extends AbstractDanbooru {
         return this._getPost('maid', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
       case 'HANDHOLDING':
         return this._getPost('holding_hands', [ Danbooru.SAFE ])
+      case 'HANDHOLDING_NSFW':
+        return this._getPost('holding_hands', [ Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
       case 'FUTA':
         return this._getPost('futanari', [ Danbooru.SAFE, Danbooru.QUESTIONABLE, Danbooru.EXPLICIT ])
       case 'FEMDOM':
