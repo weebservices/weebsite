@@ -24,7 +24,7 @@ const database = require('../db')
 const providers = require('../providers')
 const Provider = require('../providers/provider')
 const avatars = readdirSync('assets/avatars')
-const hearts = [ '❤', '💙', '🤎', '💚', '🧡', '💜', '💛' ]
+const hearts = [ '❤️', '💙', '🤎', '💚', '🧡', '💜', '💛' ]
 
 class Hook {
   notifySuccess (hook) {
