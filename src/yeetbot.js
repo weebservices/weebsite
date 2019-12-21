@@ -1,18 +1,32 @@
 const { join } = require('path')
 const { readFileSync } = require('fs')
 const fetch = require('node-fetch')
+const errors = require('./error')
 const dogstatsd = require('./dogstatsd')
 
 class YeetBot {
-  wrap (fn, type = 'NONE', data) {
+  wrap (fn) {
     return (req, res, t) => {
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
-        if (type === 'DISCORD') return this._answerDiscord(data, res)
         return res.sendStatus(404)
       }
       return fn(req, res, t)
+    }
+  }
+
+  wrapDiscord (code, desc, analytic) {
+    return (req, res) => {
+      const c = typeof code === 'function' ? code(req, res) : code
+      if (!c) return errors['404'](req, res)
+      const bot = this._detectBot(req)
+      if (bot) {
+        dogstatsd.increment(`weeb.services.bots.${bot}`)
+        return this._answerDiscord(code, res)
+      }
+      if (analytic) dogstatsd.increment(analytic)
+      res.redirect(`https://discord.gg/${c}`)
     }
   }
 
@@ -29,9 +43,9 @@ class YeetBot {
       .catch(_ => null)
     if (data) {
       let img, card
-      if (data.guild.features.includes('INVITE_SPLASH') && data.guild.splash) {
+      if (/* data.guild.features.includes('BANNER') && */ data.guild.banner) {
         card = 'summary_large_image'
-        img = `https://cdn.discordapp.com/splashes/${data.guild.id}/${data.guild.splash}.jpg?size=1024`
+        img = `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.jpg?size=1024`
       } else {
         card = 'summary'
         if (data.guild.icon) {
@@ -43,12 +57,12 @@ class YeetBot {
 
       res.type('text/html')
       return res.send(
-        readFileSync(join(__dirname, '..', 'views', 'subscriptions.html'), 'utf8')
-          .replace('{card}', card)
-          .replace('{image}', img)
-          .replace('{server}', data.guild.name)
-          .replace('{online}', data.approximate_presence_count)
-          .replace('{members}', data.approximate_member_count)
+        readFileSync(join(__dirname, '..', 'views', 'invite_embed.html'), 'utf8')
+          .replace(/{card}/g, card)
+          .replace(/{image}/g, img)
+          .replace(/{server}/g, data.guild.name)
+          .replace(/{online}/g, data.approximate_presence_count)
+          .replace(/{members}/g, data.approximate_member_count)
       )
     }
     res.sendStatus(404)

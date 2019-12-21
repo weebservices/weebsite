@@ -19,12 +19,8 @@ const services = {
       res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
       dogstatsd.increment('weeb.services.home.view')
     },
-    '/discord': yeetbot.wrap(
-      (req, res) => {
-        dogstatsd.increment('weeb.services.invite.discord')
-        res.redirect('https://discord.gg/4KhX4SY')
-      }, 'DISCORD', '4KhX4SY'
-    ),
+    '/t': yeetbot.wrapDiscord('DpxkY3x', 'weeb.services.invite.discord'),
+    '/discord': yeetbot.wrapDiscord('4KhX4SY', 'weeb.services.invite.discord'),
     '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
@@ -36,12 +32,7 @@ const services = {
   },
   senko: {
     '/': (req, res) => providers.provide(req, res, 'SENKO'),
-    '/lair': yeetbot.wrap(
-      (req, res) => {
-        dogstatsd.increment('weeb.services.invite.discord')
-        res.redirect('https://discord.gg/UrHhtWE')
-      }, 'DISCORD', 'UrHhtWE'
-    )
+    '/lair': yeetbot.wrapDiscord('UrHhtWE', 'weeb.services.invite.custom.lair')
   },
   kanna: {
     '/': (req, res) => providers.provide(req, res, 'KANNA')
@@ -120,7 +111,7 @@ app.get('/providers', (req, res) => res.json({ available: Provider.available, ns
 app.get('/can/i/have/weeb/material/in/my/discord/server', (req, res) => res.redirect('/subscriptions'))
 
 app.get('**', (req, res) => {
-  if (req.sub === 'localhost:1539') {
+  if (req.sub.startsWith('localhost') || req.get('host').includes('ngrok.io')) {
     const path = req.path.split('/')
     let sub = 'weeb'
     if (path[1] && services[path[1]]) {

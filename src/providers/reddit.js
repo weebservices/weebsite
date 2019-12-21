@@ -4,8 +4,10 @@ const Provider = require('./provider')
 class Reddit extends Provider {
   constructor () {
     super([
-      'THIGH_NSFW', 'ANIME_MEMES', 'YURI', 'MAID',
-      'TRAP', 'FUTA', 'FEMDOM', 'BDSM', 'TENTACLE', 'YAOI'
+      'YURI', 'BDSM', 'THIGH_NSFW',
+      'MAID_NSFW', 'ANIME_MEMES',
+      'FUTA', 'FEMDOM', 'TRAP',
+      'TENTACLE', 'YAOI'
     ])
   }
 
@@ -13,10 +15,12 @@ class Reddit extends Provider {
     switch (type) {
       case 'YURI':
         return this._getPost('yuri', true)
-      case 'MAID':
-        return this._getPost([ 'MaidHentai', 'HentaiMaid' ], true)
+      case 'BDSM':
+        return this._getPost([ 'hentaibondage', 'HookedUpHentai', 'HardcodeHentaiBondage' ], true)
       case 'THIGH_NSFW':
         return this._getPost([ 'thighdeology', 'thighhighhentai' ], true)
+      case 'MAID_NSFW':
+        return this._getPost([ 'MaidHentai', 'HentaiMaid' ], true)
       case 'ANIME_MEMES':
         return this._getPost('animemes', false)
       case 'FUTA':
@@ -25,8 +29,6 @@ class Reddit extends Provider {
         return this._getPost('hentaifemdom', true)
       case 'TRAP':
         return this._getPost([ 'traphentai', 'DeliciousTraps' ], true)
-      case 'BDSM':
-        return this._getPost([ 'hentaibondage', 'HookedUpHentai', 'HardcodeHentaiBondage' ], true)
       case 'TENTACLE':
         return this._getPost([ 'consentacles', 'Tentai' ], true)
       case 'YAOI':
@@ -42,7 +44,7 @@ class Reddit extends Provider {
     }
     const hot = await fetch(`https://www.reddit.com/r/${sub}/hot.json?limit=100`, {
       headers: {
-        'User-Agent': 'NodeJS:weeb.services:v0.0.1 (by /u/Bowser65) - https://weeb.services/github'
+        'User-Agent': 'NodeJS:weeb.services:v0.0.1 (by /u/Bowser65) - https://weeb.services/github, bowoser@weeb.services'
       }
     }).then(res => res.json())
     const posts = hot.data.children.map(p => p.data).filter(post => (!post.over_18 || acceptNsfw) && post.post_hint === 'image')
