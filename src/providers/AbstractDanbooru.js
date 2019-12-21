@@ -31,7 +31,7 @@ class AbstractDanbooru extends Provider {
   async _getPost (tag, ratings, allowInsanity) {
     const allPosts = await fetch(this.url.replace('#{tag}', tag)).then(res => res.json())
     const posts = allPosts.filter(post =>
-      post.file_url && ratings.includes(post.rating) && (allowInsanity || !post.tag_string.split(' ').includes('trap'))
+      post.file_url && ratings.includes(post.rating) && (allowInsanity || !(post.tag_string || post.tags).split(' ').includes('trap'))
     )
     const post = posts[Math.floor(Math.random() * posts.length)]
     return [
