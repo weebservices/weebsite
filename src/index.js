@@ -1,148 +1,80 @@
-const { join } = require('path')
-const { createReadStream } = require('fs')
-const express = require('express')
+/**
+ * A random image service for weebs because weebs are superior
+ * Copyright (C) 2019 Weeb Services
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 const hook = require('./hooks/discord')
-const Provider = require('./providers/provider')
-const subscriptions = require('./subscriptions')
-const providers = require('./providers')
-const dogstatsd = require('./dogstatsd')
 const database = require('./db')
-const errors = require('./error')
-const yeetbot = require('./yeetbot')
-
-const heCared = join(__dirname, '..', 'assets', 'even-he-cared.png')
-const app = express()
-
-const services = {
-  weeb: {
-    '/': (req, res) => {
-      res.send("<body style='margin: 0;'><iframe width='100%' height='100%' src='https://www.youtube.com/embed/OnMPFBZfJew' frameBorder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowFullScreen/></body>")
-      dogstatsd.increment('weeb.services.home.view')
-    },
-    '/t': yeetbot.wrapDiscord('DpxkY3x', 'weeb.services.invite.discord'),
-    '/discord': yeetbot.wrapDiscord('4KhX4SY', 'weeb.services.invite.discord'),
-    '/github': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services'),
-    '/license': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
-    '/canistealthis': (req, res) => res.redirect('https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
-    '/isemmacute': (req, res) => {
-      res.type('text/html')
-      createReadStream(join(__dirname, '..', 'views', 'emma.html')).pipe(res)
-      dogstatsd.increment('weeb.services.emma.view')
-    }
-  },
-  senko: {
-    '/': (req, res) => providers.provide(req, res, 'SENKO'),
-    '/lair': yeetbot.wrapDiscord('UrHhtWE', 'weeb.services.invite.custom.lair')
-  },
-  kanna: {
-    '/': (req, res) => providers.provide(req, res, 'KANNA')
-  },
-  yuri: {
-    '/': (req, res) => providers.provide(req, res, 'YURI')
-  },
-  bdsm: {
-    '/': (req, res) => providers.provide(req, res, 'BDSM'),
-    '/tied': (req, res) => providers.provide(req, res, 'TIED')
-  },
-  thigh: {
-    '/': (req, res) => providers.provide(req, res, 'THIGH'),
-    '/kinky': (req, res) => providers.provide(req, res, 'THIGH_NSFW')
-  },
-  neko: {
-    '/': (req, res) => providers.provide(req, res, 'NEKO'),
-    '/kinky': (req, res) => providers.provide(req, res, 'NEKO_NSFW')
-  },
-  maid: {
-    '/': (req, res) => providers.provide(req, res, 'MAID'),
-    '/kinky': (req, res) => providers.provide(req, res, 'MAID_NSFW')
-  },
-  memes: {
-    '/': (req, res) => providers.provide(req, res, 'ANIME_MEMES')
-  },
-  futa: {
-    '/': (req, res) => providers.provide(req, res, 'FUTA')
-  },
-  femdom: {
-    '/': (req, res) => providers.provide(req, res, 'FEMDOM')
-  },
-  trap: {
-    '/': (req, res) => providers.provide(req, res, 'TRAP')
-  },
-  tentacle: {
-    '/': (req, res) => providers.provide(req, res, 'TENTACLE')
-  },
-  yaoi: {
-    '/': (req, res) => providers.provide(req, res, 'YAOI')
-  },
-  yiff: {
-    '/': yeetbot.wrap(
-      (req, res) => {
-        res.type('image/png')
-        createReadStream(heCared).pipe(res)
-      }
-    )
-  }
-}
-
-const aliases = {
-  lesbian: 'yuri'
-}
-
-app.use(express.json())
-app.use((req, res, next) => {
-  const host = req.get('host')
-  if (!host) return errors['404'](req, res)
-
-  req.sub = host.split('.').shift()
-  if (aliases[req.sub]) req.sub = aliases[req.sub]
-  next()
-})
-
-app.use('/assets', express.static(join(__dirname, '..', 'assets')))
-app.get('/subscriptions', (req, res) => {
-  res.type('text/html')
-  createReadStream(join(__dirname, '..', 'views', 'subscriptions.html')).pipe(res)
-  dogstatsd.increment('weeb.services.subscriptions.view')
-})
-app.post('/subscriptions', subscriptions.post)
-app.delete('/subscriptions', subscriptions.del)
-
-app.get('/providers', (req, res) => res.json({ available: Provider.available, nsfw: Provider.nsfw }))
-app.get('/can/i/have/weeb/material/in/my/discord/server', (req, res) => res.redirect('/subscriptions'))
-
-app.get('**', (req, res) => {
-  if (req.sub.startsWith('localhost') || req.get('host').includes('ngrok.io')) {
-    const path = req.path.split('/')
-    let sub = 'weeb'
-    if (path[1] && services[path[1]]) {
-      [ , sub ] = path
-      delete path[1]
-    } else if (path[1] && aliases[path[1]]) {
-      sub = aliases[path[1]]
-      delete path[1]
-    }
-    const service = services[sub]
-    const target = path.join('/')
-    if (!service[target]) {
-      return errors['404'](req, res)
-    }
-    service[target](req, res)
-  } else {
-    const service = services[req.sub]
-    if (!service || !service[req.path]) {
-      return errors['404'](req, res)
-    }
-    service[req.path](req, res)
-  }
-})
-
-app.use((err, req, res, _) => { // eslint-disable-line no-unused-vars
-  console.error(err)
-  return errors['5xx'](req, res)
-})
+const { errors } = require('./utils')
+const globalEndpoints = require('./http/global')
+const { services, aliases } = require('./http/services')
 
 ;(async () => {
   await database.initialize()
   hook.schedule()
-  app.listen(1539)
+
+  require('http')
+    .createServer(async (req, res) => {
+      try {
+        // Request body
+        if (req.method === 'POST' && req.headers['content-type'] === 'application/json') {
+          req.body = await new Promise(resolve => {
+            let data = ''
+            req.on('data', chunk => (data += chunk))
+            req.on('end', () => resolve(JSON.parse(data)))
+          })
+        }
+
+        // Subdomain
+        const { host } = req.headers
+        if (!host) return errors['404'](req, res)
+
+        let subdomain = host.split('.').shift()
+        if (host.startsWith('localhost') || host.includes('ngrok.io')) {
+          const path = req.url.split('/')
+          if (path[1] && services[path[1]]) {
+            [ , subdomain ] = path
+            delete path[1]
+          } else if (path[1] && aliases[path[1]]) {
+            subdomain = aliases[path[1]]
+            delete path[1]
+          } else {
+            subdomain = 'weeb'
+          }
+          req.url = path.join('/')
+        }
+        if (aliases[subdomain]) subdomain = aliases[subdomain]
+
+        // Global services
+        if (globalEndpoints[req.url]) {
+          return globalEndpoints[req.url](req, res)
+        }
+
+        // Specific services
+        if (req.method !== 'GET') {
+          return errors['404'](req, res)
+        }
+        const service = services[subdomain]
+        if (!service || !service[req.url]) {
+          return errors['404'](req, res)
+        }
+        service[req.url](req, res)
+      } catch (err) {
+        console.error(err)
+        return errors['5xx'](req, res)
+      }
+    }).listen(1539)
 })()

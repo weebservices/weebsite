@@ -1,0 +1,190 @@
+<!--
+  A random image service for weebs because weebs are superior
+  Copyright (C) 2019 Weeb Services
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+-->
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <meta http-equiv='X-UA-Compatible' content='ie=edge'>
+  <link href='https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css' rel='stylesheet'>
+  <title>weeb.services</title>
+  <style>
+    .custom-label input:checked + svg {
+      display: block !important;
+    }
+  </style>
+</head>
+<body class='bg-gray-800 text-gray-100 container mx-auto py-8'>
+  <h1 class='text-4xl mb-1'>Weeb.Services Subscription System</h1>
+  <div class='text-xl mb-5'>A random image sent to your Discord Webhook every hour. No shit. <a
+      class='text-pink-400 hover:underline' href='https://weeb.services/discord'>Discord Server</a></div>
+  <div id='flash' class='flash mb-4 p-3 hidden'>emma is cute</div>
+  <div id='select'>
+    <div class='mb-5'>
+      <b>Notes:</b><br/>
+      To update subscriptions you have to delete your webhook and create it again.<br/>
+      We'll send you a confirmation event when adding or removing a webhook.<br/>
+      We'll remove your subscription if we fail sending 5 times in a row (Excluding 5xx errors).<br/>
+      You'll receive a notification when creating the subscription, deleting it or when a content you subbed to is no
+      longer provided.<br/>
+      This UI is not meant to be pretty but to be working. Don't complain.
+    </div>
+    <h2 class='text-3xl mb-4'>What do you want to do</h2>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2 mr-2' id='select-new'>New Subscription</button>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2' id='select-delet'>Remove Subscription</button>
+  </div>
+  <div id='new' class='hidden'>
+    <h2 class='text-3xl mb-4'>New Subscription</h2>
+    <div class='mb-4'>
+      <label class='text-xl mb-2 block'>Discord Webhook URL</label>
+      <input
+          class='bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500'
+          type='text' name='discord-webhook-new' value='' autocomplete='off'>
+    </div>
+    <div class='mb-4'>
+      <label class='text-xl mb-2 block'>What you want</label>
+      <div class='flex flex-wrap' id='checkboxes'></div>
+    </div>
+    <div id='new-recaptcha' class='my-4'></div>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2 mr-2' id='new-create'>Create</button>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2' id='new-back'>Go back</button>
+  </div>
+  <div id='delet' class='hidden'>
+    <h2 class='text-3xl mb-4'>Delete a Subscription</h2>
+    <div class='mb-4'>
+      <label class='text-xl mb-2 block'>Discord Webhook URL</label>
+      <input
+          class='bg-gray-700 border-gray-900 appearance-none border rounded w-full p-2 text-gray-300 leading-tight focus:outline-none focus:border-orange-500'
+          type='text' name='discord-webhook-delet' value='' autocomplete='off'>
+    </div>
+    <div id='delet-recaptcha' class='my-4'></div>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2 mr-2' id='delet-this'>Delete</button>
+    <button class='bg-orange-500 hover:bg-orange-600 rounded p-2' id='delet-back'>Go back</button>
+  </div>
+  <div class='hidden'>
+    <div id='template-checkbox'>
+      <label class='custom-label flex my-2 mr-5'>
+        <div class='bg-gray-700 shadow w-6 h-6 p-1 flex justify-center items-center mr-2'>
+          <input type='checkbox' class='hidden' name='{name}'>
+          <svg class='hidden w-4 h-4 text-orange-500 pointer-events-none' viewBox='0 0 172 172'>
+            <path d='M145.433 37.933L64.5 118.8658 33.7337 88.0996l-10.134 10.1341L64.5 139.1341l91.067-91.067z'
+                  fill='currentColor'/>
+          </svg>
+        </div>
+        <span class='select-none'>{text}</span>
+      </label>
+    </div>
+  </div>
+  <script>
+    let widgetIdNew, widgetIdDel, recaptchaResponse
+
+    function googleAteMyData () {
+      widgetIdNew = grecaptcha.render('new-recaptcha', {
+        sitekey: '6LcYVcYUAAAAAHPknI68Q8yHawc-KPzZs4anRF3M',
+        theme: 'dark',
+        callback: (res) => recaptchaResponse = res
+      })
+      widgetIdDel = grecaptcha.render('delet-recaptcha', {
+        sitekey: '6LcYVcYUAAAAAHPknI68Q8yHawc-KPzZs4anRF3M',
+        theme: 'dark',
+        callback: (res) => recaptchaResponse = res
+      })
+    }
+
+    function flash (message, state) {
+      const colors = { error: 'bg-red-600', success: 'bg-green-500' }
+      const flash = document.getElementById('flash')
+      flash.classList.remove('hidden', 'bg-red-600', 'bg-green-500')
+      flash.classList.add(colors[state])
+      flash.innerText = message
+      setTimeout(() => flash.classList.add('hidden'), 5000)
+    }
+
+    // INITIALIZE BOXES
+    const checkboxesContainer = document.getElementById('checkboxes')
+    const currentHost = location.host.split('.').shift().toUpperCase()
+    fetch('/providers').then(res => res.json()).then(json => {
+      let checkboxes = ''
+      const template = document.getElementById('template-checkbox').innerHTML
+      json.available.forEach(a => {
+        let name = a.split('_').map(e => e !== 'NSFW' && e[0] + e.substring(1).toLowerCase()).filter(Boolean).join(' ')
+        if (json.nsfw.includes(a)) name += ' (NSFW)'
+        checkboxes += template.replace('{name}', a).replace('{text}', name)
+      })
+      checkboxesContainer.innerHTML = checkboxes
+      setTimeout(() => {
+        checkboxesContainer.querySelectorAll('input').forEach(e => e.checked = currentHost === e.name)
+      }, 0)
+    })
+
+    // BUTTONS
+    document.getElementById('select-new').addEventListener('click', () => {
+      document.getElementById('select').classList.add('hidden')
+      document.getElementById('new').classList.remove('hidden')
+    })
+    document.getElementById('select-delet').addEventListener('click', () => {
+      document.getElementById('select').classList.add('hidden')
+      document.getElementById('delet').classList.remove('hidden')
+    })
+    document.getElementById('new-back').addEventListener('click', () => {
+      grecaptcha.reset(widgetIdNew)
+      document.getElementById('new').classList.add('hidden')
+      document.getElementById('select').classList.remove('hidden')
+    })
+    document.getElementById('delet-back').addEventListener('click', () => {
+      grecaptcha.reset(widgetIdDel)
+      document.getElementById('delet').classList.add('hidden')
+      document.getElementById('select').classList.remove('hidden')
+    })
+    document.getElementById('new-create').addEventListener('click', async () => {
+      const url = document.querySelector('[name="discord-webhook-new"]').value
+      const subTo = [ ...document.querySelectorAll('#new [type="checkbox"]:checked') ].map(i => i.name)
+      const res = await fetch(location.pathname, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, subTo, recaptchaResponse })
+      }).then(res => res.json())
+      grecaptcha.reset(widgetIdNew)
+      flash(res.content, res.type)
+      if (res.type === 'success') {
+        document.getElementById('new-back').click()
+      }
+    })
+    document.getElementById('delet-this').addEventListener('click', async () => {
+      const url = document.querySelector('[name="discord-webhook-delet"]').value
+      const res = await fetch(location.pathname, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url, recaptchaResponse })
+      }).then(res => res.json())
+      grecaptcha.reset(widgetIdDel)
+      flash(res.content, res.type)
+      if (res.type === 'success') {
+        document.getElementById('delet-back').click()
+      }
+    })
+
+    if (location.hash === '#new') {
+      document.getElementById('select-new').click()
+    } else if (location.hash === '#delet') {
+      document.getElementById('select-delet').click()
+    }
+  </script>
+  <script src='https://www.google.com/recaptcha/api.js?onload=googleAteMyData&render=explicit'></script>
+</body>
+</html>

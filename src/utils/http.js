@@ -1,16 +1,56 @@
+/**
+ * A random image service for weebs because weebs are superior
+ * Copyright (C) 2019 Weeb Services
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 const { join } = require('path')
-const { readFileSync } = require('fs')
+const { readFileSync, createReadStream } = require('fs')
 const fetch = require('node-fetch')
-const errors = require('./error')
+const errors = require('./errors')
 const dogstatsd = require('./dogstatsd')
 
-class YeetBot {
-  wrap (fn) {
+class Http {
+  // CLIENT SIDE
+  async fetch (url, params) {
+    // @todo
+  }
+
+  // SERVER-SIDE
+  redirect (res, path) {
+    res.writeHead(302, { location: path })
+    res.end()
+  }
+
+  json (res, data) {
+    res.setHeader('content-type', 'application/json')
+    res.end(JSON.stringify(data))
+  }
+
+  html (res, file) {
+    res.setHeader('content-type', 'text/html')
+    createReadStream(join(__dirname, '../../views', file)).pipe(res)
+  }
+
+  // SERVER UTILS
+  wrapYeetBots (fn) {
     return (req, res, t) => {
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
-        return res.sendStatus(404)
+        return res.writeHead(404)
       }
       return fn(req, res, t)
     }
@@ -30,10 +70,12 @@ class YeetBot {
     }
   }
 
+  // INTERNAL
   _detectBot (req) {
-    if (!req.get('user-agent')) return null
-    return Object.keys(YeetBot.UserAgents).find(
-      agents => YeetBot.UserAgents[agents].find(ua => req.get('user-agent').includes(ua))
+    const reqUa = req.headers['user-agent']
+    if (!reqUa) return null
+    return Object.keys(Http.UserAgents).find(
+      agents => Http.UserAgents[agents].find(ua => reqUa.includes(ua))
     )
   }
 
@@ -43,7 +85,7 @@ class YeetBot {
       .catch(_ => null)
     if (data) {
       let img, card
-      if (/* data.guild.features.includes('BANNER') && */ data.guild.banner) {
+      if (data.guild.features.includes('BANNER') && data.guild.banner) {
         card = 'summary_large_image'
         img = `https://cdn.discordapp.com/banners/${data.guild.id}/${data.guild.banner}.jpg?size=1024`
       } else {
@@ -55,8 +97,8 @@ class YeetBot {
         }
       }
 
-      res.type('text/html')
-      return res.send(
+      res.setHeader('content-type', 'text/html')
+      return res.end(
         readFileSync(join(__dirname, '..', 'views', 'invite_embed.html'), 'utf8')
           .replace(/{card}/g, card)
           .replace(/{image}/g, img)
@@ -65,11 +107,11 @@ class YeetBot {
           .replace(/{members}/g, data.approximate_member_count)
       )
     }
-    res.sendStatus(404)
+    res.writeHead(404)
   }
 }
 
-YeetBot.UserAgents = {
+Http.UserAgents = {
   discord: [ 'https://discordapp.com' ],
   telegram: [ 'TelegramBot' ],
   twitter: [ 'TwitterBot' ],
@@ -78,4 +120,4 @@ YeetBot.UserAgents = {
   skype: [ 'SkypeUriPreview' ],
   reddit: [ 'redditbot/' ]
 }
-module.exports = new YeetBot()
+module.exports = new Http()
