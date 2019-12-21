@@ -16,10 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const fetch = require('node-fetch')
-const Provider = require('./provider')
+const AbstractDanbooru = require('./AbstractDanbooru')
 
-class Konachan extends Provider {
+class Konachan extends AbstractDanbooru {
   constructor () {
     super([
       'SENKO', 'KANNA', 'TOHRU',
@@ -30,6 +29,10 @@ class Konachan extends Provider {
       'FUTA', 'TENTACLE',
       'TRAP' // why
     ])
+  }
+
+  get url () {
+    return 'https://konachan.com/post.json?tags=#{tag}&limit=500'
   }
 
   provide (type) {
@@ -67,18 +70,6 @@ class Konachan extends Provider {
       default:
         return null
     }
-  }
-
-  async _getPost (tag, ratings, allowInsanity) {
-    const allPosts = await fetch(`https://konachan.com/post.json?tags=${tag}&limit=500`).then(res => res.json())
-    const posts = allPosts.filter(post =>
-      post.file_url && ratings.includes(post.rating) && (allowInsanity || !post.tags.split(' ').includes('trap'))
-    )
-    const post = posts[Math.floor(Math.random() * posts.length)]
-    return [
-      post.file_url.split('.').pop(),
-      await fetch(post.file_url)
-    ]
   }
 }
 

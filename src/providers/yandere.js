@@ -16,10 +16,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-const fetch = require('node-fetch')
-const Provider = require('./provider')
+const AbstractDanbooru = require('./AbstractDanbooru')
 
-class Yandere extends Provider {
+class Yandere extends AbstractDanbooru {
   constructor () {
     super([
       'SENKO', 'KANNA', 'TOHRU',
@@ -31,6 +30,10 @@ class Yandere extends Provider {
       'TENTACLE', 'YAOI',
       'TRAP' // I hate humanity for this
     ])
+  }
+
+  get url () {
+    return 'https://yande.re/post.json?tags=#{tag}&limit=500'
   }
 
   provide (type) {
@@ -70,18 +73,6 @@ class Yandere extends Provider {
       default:
         return null
     }
-  }
-
-  async _getPost (tag, ratings, allowInsanity) {
-    const allPosts = await fetch(`https://yande.re/post.json?tags=${tag}&limit=500`).then(res => res.json())
-    const posts = allPosts.filter(post =>
-      post.file_url && ratings.includes(post.rating) && (allowInsanity || !post.tags.split(' ').includes('trap'))
-    )
-    const post = posts[Math.floor(Math.random() * posts.length)]
-    return [
-      post.file_url.split('.').pop(),
-      await fetch(post.file_url)
-    ]
   }
 }
 
