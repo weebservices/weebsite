@@ -43,7 +43,8 @@ class Http {
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
-        return res.writeHead(404)
+        res.writeHead(404)
+        return res.end()
       }
       return fn(req, res, t)
     }
