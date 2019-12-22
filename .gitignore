@@ -1,0 +1,14 @@
+# IntelliJ
+.idea
+
+# stuff
+*.nogit.*
+.travisci/private_rsa_keys.tar.gz
+keys.json
+
+# i'll maybe set it up later (probably given how meme deploying ex is)
+.travis.yml
+.travisci
+
+# eclipse bs
+/.project
