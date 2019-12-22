@@ -36,7 +36,7 @@ const services = {
       http.html(res, 'homepage.html')
       dogstatsd.increment('weeb.services.home.view')
     },
-    '/discord': http.wrapDiscord('4KhX4SY', 'weeb.services.invite.discord'),
+    '/discord': http.wrapDiscord('4KhX4SY', 'Official Discord server for weeb.services', 'weeb.services.invite.discord'),
     '/github': (req, res) => http.redirect(res, 'https://github.com/Bowser65/weeb.services'),
     '/license': (req, res) => http.redirect(res, 'https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
     '/canistealthis': (req, res) => http.redirect(res, 'https://github.com/Bowser65/weeb.services/blob/master/LICENSE'),
@@ -47,7 +47,7 @@ const services = {
   },
   senko: {
     '/': provider('SENKO'),
-    '/lair': http.wrapDiscord('UrHhtWE', 'weeb.services.invite.custom.lair')
+    '/lair': http.wrapDiscord('UrHhtWE', 'The safe haven where Senko and Senkists live', 'weeb.services.invite.custom.lair')
   },
   kanna: basicService('KANNA'),
   tohru: basicService('TOHRU'),

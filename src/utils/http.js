@@ -50,17 +50,17 @@ class Http {
     }
   }
 
-  wrapDiscord (code, desc, analytic) {
+  wrapDiscord (code, description, analytic) {
     return (req, res) => {
       const c = typeof code === 'function' ? code(req, res) : code
       if (!c) return errors['404'](req, res)
       const bot = this._detectBot(req)
       if (bot) {
         dogstatsd.increment(`weeb.services.bots.${bot}`)
-        return this._answerDiscord(code, res)
+        return this._answerDiscord(code, description, res)
       }
       if (analytic) dogstatsd.increment(analytic)
-      res.redirect(`https://discord.gg/${c}`)
+      this.redirect(res, `https://discord.gg/${c}`)
     }
   }
 
@@ -72,7 +72,7 @@ class Http {
     )
   }
 
-  async _answerDiscord (invite, res) {
+  async _answerDiscord (invite, description, res) {
     const data = await fetch(`https://discordapp.com/api/v6/invites/${invite}?with_counts=true`)
       .then(res => res.json())
       .catch(_ => null)
@@ -90,9 +90,15 @@ class Http {
         }
       }
 
+      let desc = ''
+      if (description) {
+        desc = `${description} - `
+      }
+
       res.setHeader('content-type', 'text/html')
       return res.end(
-        readFileSync(join(__dirname, '..', 'views', 'invite_embed.html'), 'utf8')
+        readFileSync(join(__dirname, '../../views', 'invite_embed.html'), 'utf8')
+          .replace(/{desc}/g, desc)
           .replace(/{card}/g, card)
           .replace(/{image}/g, img)
           .replace(/{server}/g, data.guild.name)

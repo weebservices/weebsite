@@ -60,8 +60,11 @@ const { services, aliases } = require('./http/services')
         } else {
           subdomain = 'weeb'
         }
-        req.url = path.join('/')
+
+        req.url = `/${path.filter(Boolean).join('/')}`
       }
+      // eslint-disable-next-line prefer-destructuring
+      req.url = req.url.split('?')[0].split('#')[0]
       if (aliases[subdomain]) subdomain = aliases[subdomain]
 
       // Global services
@@ -73,6 +76,7 @@ const { services, aliases } = require('./http/services')
       if (req.method !== 'GET') {
         return errors['404'](req, res)
       }
+      console.log(subdomain, req.url)
       const service = services[subdomain]
       if (!service || !service[req.url]) {
         return errors['404'](req, res)
