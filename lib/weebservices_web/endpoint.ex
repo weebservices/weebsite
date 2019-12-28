@@ -1,10 +1,6 @@
 defmodule WeebServicesWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :weebservices
 
-  socket "/socket", WeebServicesWeb.UserSocket,
-    websocket: true,
-    longpoll: false
-
   # Serve at "/" the static files from "priv/static" directory.
   #
   # You should set gzip to true if you are running phx.digest
@@ -24,11 +20,11 @@ defmodule WeebServicesWeb.Endpoint do
   end
 
   plug Plug.RequestId
-  plug Plug.Logger
+  plug Plug.Telemetry, event_prefix: [:phoenix, :endpoint]
 
   plug Plug.Parsers,
-    parsers: [:urlencoded, :multipart, :json],
-    pass: ["*/*"],
+    parsers: [:json],
+    pass: ["api/*"],
     json_decoder: Phoenix.json_library()
 
   plug Plug.MethodOverride

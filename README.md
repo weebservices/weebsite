@@ -1,11 +1,19 @@
-# weeb.services
+# WeebServices
 
-[![License](https://img.shields.io/github/license/Bowser65/weeb.services.svg?style=flat-square)](https://github.com/Bowser65/weeb.services/blob/master/LICENSE)
-[![Discord](https://img.shields.io/badge/chat-on%20Discord-7289DA.svg?style=flat-square)](https://discord.gg/4KhX4SY)
-[![Donate](https://img.shields.io/badge/donate-Patreon-F96854.svg?style=flat-square)](https://www.patreon.com/Bowser65)
+To start your Phoenix server:
 
-A random image service for weebs because weebs are superior
+  * Install dependencies with `mix deps.get`
+  * Install Node.js dependencies with `cd assets && npm install`
+  * Start Phoenix endpoint with `mix phx.server`
 
-## Why an Elixir rewrite
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
-Because I can. And because Elixir is cool and I want to tinker with it.
+Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+
+## Learn more
+
+  * Official website: http://www.phoenixframework.org/
+  * Guides: https://hexdocs.pm/phoenix/overview.html
+  * Docs: https://hexdocs.pm/phoenix
+  * Mailing list: http://groups.google.com/group/phoenix-talk
+  * Source: https://github.com/phoenixframework/phoenix

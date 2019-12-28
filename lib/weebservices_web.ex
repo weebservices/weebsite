@@ -22,7 +22,6 @@ defmodule WeebServicesWeb do
       use Phoenix.Controller, namespace: WeebServicesWeb
 
       import Plug.Conn
-      import WeebServicesWeb.Gettext
       alias WeebServicesWeb.Router.Helpers, as: Routes
     end
   end
@@ -40,7 +39,6 @@ defmodule WeebServicesWeb do
       use Phoenix.HTML
 
       import WeebServicesWeb.ErrorHelpers
-      import WeebServicesWeb.Gettext
       alias WeebServicesWeb.Router.Helpers, as: Routes
     end
   end
@@ -50,13 +48,6 @@ defmodule WeebServicesWeb do
       use Phoenix.Router
       import Plug.Conn
       import Phoenix.Controller
-    end
-  end
-
-  def channel do
-    quote do
-      use Phoenix.Channel
-      import WeebServicesWeb.Gettext
     end
   end
 
