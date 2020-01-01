@@ -1,1 +1,26 @@
-@import "./phoenix.css";
+@import 'vars';
+@import 'layout';
+@import 'flash';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  font-family: 'Lato', sans-serif;
+  background-color: $dark-secondary;
+  color: $light-secondary;
+}
+
+a {
+  color: $primary;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

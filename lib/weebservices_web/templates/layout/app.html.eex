@@ -1,30 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>WeebServices · Phoenix Framework</title>
-    <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/app.css") %>"/>
-  </head>
-  <body>
-    <header>
-      <section class="container">
-        <nav role="navigation">
-          <ul>
-            <li><a href="https://hexdocs.pm/phoenix/overview.html">Get Started</a></li>
-          </ul>
-        </nav>
-        <a href="http://phoenixframework.org/" class="phx-logo">
-          <img src="<%= Routes.static_path(@conn, "/images/phoenix.png") %>" alt="Phoenix Framework Logo"/>
-        </a>
-      </section>
-    </header>
-    <main role="main" class="container">
-      <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
-      <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
+<html lang='en'>
+<head>
+  <meta charset='utf-8'/>
+  <meta http-equiv='X-UA-Compatible' content='IE=edge'/>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+  <title>Weeb.Services</title>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato&display=swap'/>
+  <link rel='stylesheet' href='<%= Routes.static_path(@conn, "/assets/app.css") %>'/>
+</head>
+<body>
+  <header>
+    <h1>Weeb.Services</h1>
+    <a href='/login'>Login with Discord</a>
+  </header>
+  <main role='main'>
+    <% info = get_flash(@conn, :info) %>
+    <% success = get_flash(@conn, :success) %>
+    <% warning = get_flash(@conn, :warning) %>
+    <% error = get_flash(@conn, :error) %>
+    <div class='flash-container'>
+      <%= if info do %>
+      <div class='info' role='alert'>
+        <img src='/assets/icons/info.svg' alt='info' class='icon'/>
+        <p><%= info %></p>
+        <img src='/assets/icons/close.svg' alt='close' class='close'/>
+      </div>
+      <% end %>
+      <%= if success do %>
+      <div class='success' role='alert'>
+        <img src='/assets/icons/success.svg' alt='success' class='icon'/>
+        <p><%= success %></p>
+        <img src='/assets/icons/close.svg' alt='close' class='close'/>
+      </div>
+      <% end %>
+      <%= if warning do %>
+      <div class='warning' role='alert'>
+        <img src='/assets/icons/warning.svg' alt='warning' class='icon'/>
+        <p><%= warning %></p>
+        <img src='/assets/icons/close.svg' alt='close' class='close'/>
+      </div>
+      <% end %>
+      <%= if error do %>
+      <div class='danger' role='alert'>
+        <img src='/assets/icons/error.svg' alt='error' class='icon'/>
+        <p><%= error %></p>
+        <img src='/assets/icons/close.svg' alt='close' class='close'/>
+      </div>
+      <% end %>
+    </div>
+    <div class='container'>
       <%= render @view_module, @view_template, assigns %>
-    </main>
-    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
-  </body>
+    </div>
+  </main>
+  <footer>
+    <div class='legal'>
+      <span>Copyright (c) 2019 - <%= DateTime.utc_now.year %> weeb.services</span>
+      <span>Licensed under the <a href='https://github.com/WeebServices/weebsite/blob/master/LICENSE' target='_blank'>GNU Affero General Public License 3.0</a></span>
+    </div>
+    <div class='powered-by'>
+      <span>Powered by</span>
+      <a href='https://www.phoenixframework.org' target='_blank'>
+        <img src='<%= Routes.static_path(@conn, "/assets/phoenix.png") %>' alt='Phoenix Framework'/>
+      </a>
+    </div>
+  </footer>
+  <script type='text/javascript' src='<%= Routes.static_path(@conn, "/assets/app.js") %>'></script>
+</body>
 </html>

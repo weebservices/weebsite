@@ -22,11 +22,6 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
-# Google ReCaptcha
-config :recaptcha,
-       public: (System.get_env("RECAPTCHA_PUBLIC") || raise "environment variable RECAPTCHA_PUBLIC is missing."),
-       private: (System.get_env("RECAPTCHA_PRIVATE") || raise "environment variable RECAPTCHA_PRIVATE is missing.")
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

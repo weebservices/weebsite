@@ -1,0 +1,41 @@
+.flash-container > div {
+  margin: 0;
+  padding: 10px 15px;
+  display: flex;
+  align-items: center;
+
+  .icon, .close {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .icon {
+    margin-right: 15px;
+  }
+
+  .close {
+    margin-left: auto;
+    cursor: pointer;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  &.info {
+    background-color: $blue;
+  }
+
+  &.success {
+    background-color: $green;
+  }
+
+  &.warning {
+    background-color: $orange;
+  }
+
+  &.danger {
+    background-color: $red;
+  }
+}
