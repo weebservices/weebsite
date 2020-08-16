@@ -43,7 +43,7 @@ class Reddit extends Provider {
       case 'HANDHOLDING':
         return this._getPost('handholding', true) // r/handholding is marked nsfw but doesn't have anything nsfw
       case 'ANIME_MEMES':
-        return this._getPost('animemes', false)
+        return this._getPost([ 'animemes', 'goodanimemes' ], false)
       case 'FUTA':
         return this._getPost([ 'FutaCum', 'futanari', 'futanari_comics', 'FutanariPegging' ], true)
       case 'FEMDOM':
