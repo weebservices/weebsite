@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.js",
   "author": "Bowser65",
-  "license": "AGPL-3.0",
+  "license": "OSL-3.0",
   "scripts": {
     "start": "node src/index.js"
   },
