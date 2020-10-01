@@ -68,7 +68,7 @@ class Database {
   }
 
   _splitHook (hook) {
-    return hook.match(/^https:\/\/(?:canary\.|ptb\.)?discordapp.com\/api\/webhooks\/(\d+)\/([\w-]+)$/).slice(1, 3)
+    return hook.match(/^https:\/\/(?:canary\.|ptb\.)?discord(?:app)?.com\/api\/webhooks\/(\d+)\/([\w-]+)$/).slice(1, 3)
   }
 }
 
